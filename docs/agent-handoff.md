@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-09-30  
 **Project owner/creator:** Ahmed Ramadan  
-**Current phase:** Phase 3 levels, books, and unit navigation complete; the learning player, full audio player, and AI remain out of scope.
+**Current phase:** Phase 4 Unit Player + Audio Foundation complete; listening completion, passage, Follow Along, vocabulary, speaking, grammar, reviews, and AI remain out of scope.
 
 ## Project overview
 
@@ -12,7 +12,7 @@ SpeakForge is intended to be a scalable, data-driven English-learning platform o
 
 - Git initialized on `master`; initial commit `866ea68` records the source resources and foundation. `.gitignore`, npm scripts, Node.js ESM source, tests, and route descriptors are present.
 - Architecture recommendation and audit findings are in [architecture.md](architecture.md).
-- Responsive navigation/catalog UI and a metadata-only UnitPage placeholder now use the Phase 2 content loader. There is still no learning player, full audio player, AI practice, or progress persistence abstraction.
+- Responsive navigation/catalog UI and reusable unit pages are implemented. Unit pages now include the real unit-level AudioPlayer. No listen-completion logic, passage, progress persistence, or AI practice exists.
 - Supplied specs are placeholders (53 bytes each); they need real product requirements before implementation can confidently enforce them.
 - A2 structured JSON is concatenated unit objects; the shared parser now accepts concatenated objects, single objects, and array-wrapped data without source edits.
 
@@ -161,3 +161,40 @@ This phase audited the available resources, inspected the B1 reference UX, recor
 - Working branch: `feature/levels-books-navigation`. Navigation implementation commit: `ecd974e` (`Build levels books and unit navigation`).
 - The next requested phase is **Unit Player + Audio Foundation**. Keep the current UnitPage as a metadata-only placeholder until that phase; add actual progress state only after a progress abstraction is established.
 
+
+## Phase 4 delivery (2026-09-30)
+
+### Branch and feature files
+
+- Branch: `feature/unit-player-audio`.
+- Updated `src/features/catalog/pages.js` to expand the shared UnitPage with Now Listening, unit metadata, instructions, and the player.
+- Updated `src/app/server.js` to serve only requested cover/audio assets. Audio responses support HTTP byte ranges so native seeking can request partial content.
+- Updated `public/app.js` to mount the player and mobile navigation. Added responsive audio control styles to `public/styles.css`.
+- Added reusable markup in `src/components/audio-player.js`.
+- Added player state/control behavior in `src/features/audio/audio-player.js` and the injectable speed store in `src/features/audio/audio-preferences.js`.
+- Added `tests/audio-player.test.js`; extended `tests/navigation.test.js`; updated `scripts/verify-production.js` to check built audio ranges.
+
+### Public player interface and state
+
+- `renderAudioPlayer({ audio, label })` produces the reusable player UI from a normalized `AudioAsset`; a missing asset renders “Audio unavailable for this unit.” without an audio element.
+- `mountAudioPlayer(root, { preferences, onStatus })` binds the markup controls and keyboard listener, returning `{ controller, destroy }`.
+- `createAudioController({ audio, preferences, onChange })` exposes `getState`, `play`, `pause`, `toggle`, `seek`, `seekBy`, `setSpeed`, `setRepeat`, `repeatFromBeginning`, `setVolume`, `toggleMute`, and `dispose`.
+- State names: `loading`, `ready`, `playing`, `paused`, `ended`, `error`. Duration and current time come only from the native audio element metadata/events.
+- Repeat count is a total number of plays (1, 2, 3, or 5). On `ended`, the controller restarts until the selected total is reached; it does not record learning listens.
+- Speed writes directly to native `audio.playbackRate` without resetting `currentTime`. `createAudioPreferences` stores validated speed values in a versioned, scoped preference key and accepts an injected storage backend for future account-specific persistence.
+- Space toggles play/pause; arrow keys seek by 5 seconds. Editable targets, range inputs, buttons, and links retain their normal keyboard behavior.
+- Only the selected UnitPage includes an audio source. The server supports `Range` requests and returns `audio/mpeg`; no course-wide audio preload, paragraph audio, or timing data was added.
+
+### Verification
+
+- `npm test`: 17 tests passed, 0 failed. Coverage includes markup/control labels, play/pause, ready state, all speed values and no-restart behavior, 1×/2×/3×/5× repeat totals, repeat from beginning, seeking bounds, volume/mute, keyboard editing protections, missing/load/play errors, and real mapped A2/B1/B1+ Unit 1 MP3 files over HTTP range requests.
+- `npm run validate:content`: passed for 34 units, with 45 repeated-vocabulary warnings.
+- `npm run build` and `npm run verify:production`: passed; built routes, cover, stylesheet, audio modules, and partial audio delivery were checked.
+- Responsive CSS includes tablet (900px), mobile (700px), and narrow mobile (380px) layouts with 42–46px control targets. Automated breakpoint/style assertions passed. Manual visual device/browser inspection could not be performed because the available browser automation runtime failed to initialize in this workspace.
+
+### Limits and next phase
+
+- The audio controller is tested with a deterministic mock audio element and the HTTP layer is tested with real MP3 files. Playback itself still depends on the learner’s browser and device.
+- No completed-listen counting, passage unlocking, Follow Along, or progress recording was introduced.
+- Next phase: **3-Listen Completion + Passage Unlock + Follow Along Architecture**. Keep learning completion events outside the reusable AudioPlayer and build them as a separate domain feature.
+- Phase 4 implementation commit: to be recorded after commit creation.

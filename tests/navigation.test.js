@@ -25,7 +25,7 @@ test('shared unit route displays each selected unit and rejects unknown units', 
   for (const [url, title] of [['/learn/a2/unit-01', 'The morning habit'], ['/learn/b1-core/unit-01', 'The tree that bends'], ['/learn/b1plus-bridge/unit-01', 'The observer within']]) {
     const html = await renderPath(url);
     assert.ok(html.includes(title));
-    assert.ok(html.includes('learning activities will appear here'));
+    assert.ok(html.includes('Now Listening'));assert.ok(html.includes('Unit audio'));assert.ok(html.includes('/audio/'));
     assert.ok(html.includes('Back to'));
   }
   assert.ok((await renderPath('/learn/a2/unit-99')).includes('Page not found'));

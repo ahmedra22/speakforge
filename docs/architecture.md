@@ -155,3 +155,7 @@ The accessible B1 page presents level selection, a book/core-continuation choice
 ## Phase 2 implementation note
 
 The content engine is implemented in JavaScript ESM using Node.js built-ins, with no runtime dependencies. Source JSON is parsed and normalized at load time; manifests map only observed assets. `npm run validate:content` validates source and mappings, and `npm test` exercises the normalizer. Route descriptors are present, but no frontend framework or UI was added in this phase. Git was initialized; see `docs/agent-handoff.md` for status and ownership boundaries.
+
+## Phase 4 audio boundary
+
+The reusable player is split between `src/components/audio-player.js` (markup), `src/features/audio/audio-player.js` (native media state and controls), and `src/features/audio/audio-preferences.js` (scoped, injectable playback-speed persistence). Unit detail loads its normalized audio reference and passes it to the component. The HTTP server serves one requested MP3 with byte-range support. Audio state covers loading, ready, playing, paused, ended, and error; it does not count legitimate listens or couple to progress. Future listen completion and Follow Along must consume a separate event boundary without making the player unit-specific.

@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-09-30  
 **Project owner/creator:** Ahmed Ramadan  
-**Current phase:** Phase 2 content engine and project foundation complete; full UI, unit page, player, and AI remain out of scope.
+**Current phase:** Phase 3 levels, books, and unit navigation complete; the learning player, full audio player, and AI remain out of scope.
 
 ## Project overview
 
@@ -12,7 +12,7 @@ SpeakForge is intended to be a scalable, data-driven English-learning platform o
 
 - Git initialized on `master`; initial commit `866ea68` records the source resources and foundation. `.gitignore`, npm scripts, Node.js ESM source, tests, and route descriptors are present.
 - Architecture recommendation and audit findings are in [architecture.md](architecture.md).
-- No polished website, AI practice, full audio player, unit page, or progress implementation has been built.
+- Responsive navigation/catalog UI and a metadata-only UnitPage placeholder now use the Phase 2 content loader. There is still no learning player, full audio player, AI practice, or progress persistence abstraction.
 - Supplied specs are placeholders (53 bytes each); they need real product requirements before implementation can confidently enforce them.
 - A2 structured JSON is concatenated unit objects and fails parsing as one JSON document. Content adapters must handle only after confirming exact formats and adding validation.
 
@@ -120,3 +120,43 @@ This phase audited the available resources, inspected the B1 reference UX, recor
 - The original B1 and B1+ source framing was handled by the same tolerant parser; any future source format should be covered by fixtures.
 - Next phase: agree final product constraints, then build the catalog/level/book UI on the stable loader and route contracts. Keep unit page, audio-player experience, AI Practice, and cloud persistence in their later phases.
 
+
+## Phase 3 delivery (2026-09-30)
+
+### Routes and navigation
+
+- `/` home catalog, `/about`, `/learn/:levelId` level overview, `/learn/:bookRouteSlug` selected-book overview, and `/learn/:bookRouteSlug/unit-:unitNumber` reusable unit placeholder. Legacy short `/:levelId` routes are also accepted.
+- Available level/book destinations: `/learn/a2`, `/learn/b1-core`, `/learn/b1plus-bridge`. Unit 1 examples: `/learn/a2/unit-01`, `/learn/b1-core/unit-01`, `/learn/b1plus-bridge/unit-01`.
+- Planned level routes display their mapped cover and an upcoming state with no unit list. Route slugs live in the catalog manifest; canonical unit IDs remain internal loader keys.
+
+### Components and data flow
+
+- Reusable shell in `src/components/layout.js`; shared `level-switcher.js`, `book-card.js`, and `unit-list.js` components; catalog/home/level/unit renderers in `src/features/catalog/pages.js`.
+- `src/app/render.js` resolves paths and calls the existing `contentLoader`; `src/app/server.js` serves rendered HTML, styles, script, and mapped cover images. `scripts/serve.js` starts the server.
+- Catalog level/book metadata comes from the Phase 2 manifest and loader. `listUnitSummaries(bookId)` returns only card fields for overview pages. `getUnit(canonicalId)` fetches full normalized detail only for a selected unit route. No second content loader was added.
+- `src/app/routes.js` centralizes route shapes and URL helpers. `src/content/manifests/catalog.js` adds stable route slugs.
+- Responsive styling is in `public/styles.css`; the mobile navigation toggle is in `public/app.js`. Pages use semantic headings, ordered unit lists, breadcrumb navigation, keyboard-visible focus, a skip link, labelled navigation, and descriptive cover text.
+- Unit metadata and cover/audio availability come from normalized data/mappings. Unit status accepts AVAILABLE, LOCKED, COMPLETED, and CURRENT when supplied; since Phase 2 has no progress abstraction, this UI currently displays AVAILABLE for every unit. It does not invent completion or lock state.
+- Short descriptions summarize the actual unit count and topics. No unit content is hard-coded in presentation components.
+
+### Files changed/created in Phase 3
+
+- Updated `README.md`, `package.json`, `src/content/repository/content-loader.js`, `src/content/manifests/catalog.js`, and `src/app/routes.js`.
+- Added `src/app/html.js`, `src/app/render.js`, `src/app/server.js`.
+- Added reusable components under `src/components/`: `layout.js`, `book-card.js`, `level-switcher.js`, `unit-list.js`.
+- Added pages at `src/features/catalog/pages.js`, responsive assets at `public/styles.css` and `public/app.js`.
+- Added `scripts/serve.js`, `scripts/build.js`, `scripts/verify-production.js`, and `tests/navigation.test.js`.
+
+### Commands and verification
+
+- `npm start`: local server at `http://localhost:4173`.
+- `npm run build`: copies the server, public assets, content modules, and source resources into `dist/`.
+- `npm run verify:production`: HTTP smoke check for home, all populated level/book routes, planned B2+, unit routes, a cover, and stylesheet from the production output. Run after build.
+- `npm test`: 7 tests passed, 0 failed (normalization plus navigation, future states, placeholder routes, and HTTP assets).
+- `npm run validate:content`: passed for 34 units, with 45 repeated-vocabulary warnings.
+- `npm run build`: succeeded; production smoke check passed.
+
+### Git and next phase
+
+- Working branch: `feature/levels-books-navigation`. Phase 3 commit is recorded below after final commit creation.
+- The next requested phase is **Unit Player + Audio Foundation**. Keep the current UnitPage as a metadata-only placeholder until that phase; add actual progress state only after a progress abstraction is established.

@@ -1,0 +1,1 @@
+{"name":"speakforge","version":"0.1.0","private":true,"type":"module","scripts":{"validate:content":"node scripts/validate-content.js","test":"node --test"},"engines":{"node":">=20"}}

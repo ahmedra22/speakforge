@@ -1,0 +1,9 @@
+/** @typedef {{path:string,mediaType:string}} AssetReference */
+/** @typedef {{id:string,label:string,order:number,status:'available'|'planned',bookIds:string[],cover?:AssetReference}} Level */
+/** @typedef {{id:string,levelId:string,title?:string,status:'available'|'planned',unitIds:string[],cover?:AssetReference,sourcePdf?:AssetReference}} Book */
+/** @typedef {{id:string,word:string,partOfSpeech:string,meaningInContext:string,example:string}} VocabularyItem */
+/** @typedef {{id:string,text:string}} SpeakingPrompt */
+/** @typedef {{title:string,explanation:string,examples:string[],practiceTask:string}} GrammarFocus */
+/** @typedef {{kind:'unit',id:string,bookId:string,levelId:string,number:number,title:string,topic:string,passage:{paragraphs:string[]},vocabulary:VocabularyItem[],speakingPrompts:SpeakingPrompt[],grammar?:GrammarFocus,audio?:{path:string,mediaType:'audio/mpeg'},learningMetadata:{sourceLevelLabel:string,sourceFile:string}}} Unit */
+/** @typedef {{kind:'review',id:string,bookId:string,number:number,title:string,includedUnitIds:string[]}} Review */
+export const contentModelVersion = 1;

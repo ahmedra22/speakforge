@@ -1,0 +1,1217 @@
+{
+  "level": "A2 Foundation",
+  "unit_number": 1,
+  "unit_title": "The morning habit",
+  "topic": "Daily routines",
+  "passage": [
+    "Many successful people say that the morning is the most important part of the day. They wake up early and follow a routine. A routine is a set of actions you do every day in the same order.",
+    "For example, some people wake up, drink water, and then do some exercise. Others prefer to sit quietly and think before they start their day. These habits help people feel ready and calm.",
+    "A good routine does not have to be long or complicated. It just needs to be consistent. When you do the same things every morning, your body and mind learn to prepare for the day ahead.",
+    "Try to notice your own morning habits. Are they helping you? If not, you can change them slowly, one small step at a time."
+  ],
+  "vocabulary": [
+    {
+      "word": "routine",
+      "part_of_speech": "noun",
+      "meaning_in_context": "A set of actions you do regularly in the same order",
+      "example": "My morning routine takes 30 minutes."
+    },
+    {
+      "word": "habit",
+      "part_of_speech": "noun",
+      "meaning_in_context": "Something you do regularly, often without thinking",
+      "example": "Reading is a good habit."
+    },
+    {
+      "word": "consistent",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Always the same; not changing",
+      "example": "Be consistent with your practice."
+    },
+    {
+      "word": "prepare",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To get ready for something",
+      "example": "I prepare my bag the night before."
+    },
+    {
+      "word": "prefer",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To like one thing more than another",
+      "example": "I prefer tea to coffee."
+    },
+    {
+      "word": "exercise",
+      "part_of_speech": "noun",
+      "meaning_in_context": "Physical activity to keep your body healthy",
+      "example": "Daily exercise improves your mood."
+    },
+    {
+      "word": "notice",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To see or become aware of something",
+      "example": "Did you notice the change?"
+    },
+    {
+      "word": "complicated",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Difficult to understand or do",
+      "example": "The instructions were too complicated."
+    },
+    {
+      "word": "successful",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Achieving what you wanted to achieve",
+      "example": "She is a successful teacher."
+    },
+    {
+      "word": "improve",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To become or make something better",
+      "example": "Practice will improve your English."
+    },
+    {
+      "word": "calm",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Peaceful; not worried or excited",
+      "example": "Take a deep breath and stay calm."
+    },
+    {
+      "word": "follow",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To do something according to a plan or example",
+      "example": "Follow the instructions carefully."
+    },
+    {
+      "word": "slowly",
+      "part_of_speech": "adverb",
+      "meaning_in_context": "At a low speed; not quickly",
+      "example": "Change your habits slowly."
+    },
+    {
+      "word": "ahead",
+      "part_of_speech": "adverb",
+      "meaning_in_context": "In the future; forward in time",
+      "example": "Plan ahead for the week."
+    },
+    {
+      "word": "order",
+      "part_of_speech": "noun",
+      "meaning_in_context": "The way things are arranged in a sequence",
+      "example": "Do things in the right order."
+    }
+  ],
+  "speaking_prompts": [
+    "Describe your own morning routine. What do you do first? What do you do last?",
+    "What habit would you like to improve or start? Why?",
+    "Do you prefer to prepare things the night before or in the morning? Explain.",
+    "Talk about a routine that helps you feel calm or ready for the day."
+  ],
+  "grammar_focus": {
+    "title": "Simple present for habits and routines",
+    "explanation": "We use the simple present tense to talk about things we do regularly. Look at these examples from the passage: 'They wake up early', 'Others prefer to sit quietly'. Notice the verb has no change for I/you/we/they, but adds -s for he/she/it.",
+    "examples": [
+      "I wake up at 7am every day.",
+      "She follows a strict routine.",
+      "We exercise in the morning.",
+      "He prefers to work quietly."
+    ],
+    "practice_task": "Write 3 sentences about your own daily habits using the simple present tense."
+  }
+}
+
+{
+  "level": "A2 Foundation",
+  "unit_number": 2,
+  "unit_title": "What makes a good friend",
+  "topic": "Friendship",
+  "passage": [
+    "A good friend is someone you can trust. Trust means that you believe a person will be honest with you and keep your secrets. Without trust, a friendship is not strong.",
+    "Good friends also listen to each other. When you have a problem, a real friend does not only give advice. They listen carefully and try to understand how you feel. This is called empathy.",
+    "Friendship also needs time. You cannot build a close friendship in one day. It grows slowly through shared experiences, things you do together, like eating, laughing, or helping each other.",
+    "Not all friends need to be the same as you. In fact, friends who are different from you can teach you new things and help you see the world in a new way. A good friendship makes both people feel better about life."
+  ],
+  "vocabulary": [
+    {
+      "word": "trust",
+      "part_of_speech": "noun/verb",
+      "meaning_in_context": "The belief that someone is honest and reliable",
+      "example": "I trust her completely."
+    },
+    {
+      "word": "honest",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Telling the truth; not lying",
+      "example": "Be honest with your friends."
+    },
+    {
+      "word": "secret",
+      "part_of_speech": "noun",
+      "meaning_in_context": "Information that you do not share with others",
+      "example": "Can you keep a secret?"
+    },
+    {
+      "word": "listen",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To pay attention to what someone is saying",
+      "example": "Please listen carefully."
+    },
+    {
+      "word": "advice",
+      "part_of_speech": "noun",
+      "meaning_in_context": "Suggestions about what someone should do",
+      "example": "She gave me good advice."
+    },
+    {
+      "word": "empathy",
+      "part_of_speech": "noun",
+      "meaning_in_context": "The ability to understand how someone else feels",
+      "example": "Good friends show empathy."
+    },
+    {
+      "word": "shared",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Done or used by two or more people together",
+      "example": "Shared experiences build friendship."
+    },
+    {
+      "word": "experience",
+      "part_of_speech": "noun",
+      "meaning_in_context": "Something that happens to you that affects you",
+      "example": "That was an important experience."
+    },
+    {
+      "word": "close",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Having a strong, warm relationship",
+      "example": "We are very close friends."
+    },
+    {
+      "word": "build",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To create something over time",
+      "example": "Build good habits every day."
+    },
+    {
+      "word": "grow",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To develop and become bigger or stronger",
+      "example": "Friendships grow with time."
+    },
+    {
+      "word": "real",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Genuine; not fake or pretend",
+      "example": "A real friend supports you."
+    },
+    {
+      "word": "different",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Not the same as something else",
+      "example": "We are very different people."
+    },
+    {
+      "word": "teach",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To help someone learn something",
+      "example": "Friends can teach you a lot."
+    },
+    {
+      "word": "both",
+      "part_of_speech": "determiner",
+      "meaning_in_context": "Two people or things together",
+      "example": "Both of us enjoyed the trip."
+    }
+  ],
+  "speaking_prompts": [
+    "Describe a good friend. What makes them special to you?",
+    "Talk about a shared experience that made a friendship closer.",
+    "What is more important in a friend, honesty or empathy? Why?",
+    "Have you ever had a friend who was very different from you? What did you learn from them?"
+  ],
+  "grammar_focus": {
+    "title": "Can for ability and possibility",
+    "explanation": "In the passage, we see 'you can trust', 'you cannot build', 'friends can teach'. We use 'can' to talk about ability (what someone is able to do) or possibility. The negative form is 'cannot' or 'can't'.",
+    "examples": [
+      "A good friend can keep secrets.",
+      "You can't build trust quickly.",
+      "Friends can teach you new things.",
+      "I can listen for hours."
+    ],
+    "practice_task": "Write 3 sentences using 'can' or 'can't' about friendship or daily life."
+  }
+}
+
+{
+  "level": "A2 Foundation",
+  "unit_number": 3,
+  "unit_title": "Eating well",
+  "topic": "Food and health",
+  "passage": [
+    "What we eat has a big effect on how we feel. When we eat healthy food, our bodies have more energy and our minds feel clearer. But eating well does not mean you have to follow a complicated diet.",
+    "The most important thing is balance. Try to eat a variety of foods, vegetables, fruit, protein, and whole grains. Avoid eating too much sugar or fast food. These foods might taste good, but they do not give your body what it needs.",
+    "Water is also very important. Many people forget to drink enough water during the day. When your body does not have enough water, you can feel tired or find it hard to concentrate.",
+    "You do not need to change everything at once. Start with small changes. Add one more vegetable to your meals. Drink one more glass of water. Small steps can lead to big results over time."
+  ],
+  "vocabulary": [
+    {
+      "word": "effect",
+      "part_of_speech": "noun",
+      "meaning_in_context": "A result or change caused by something",
+      "example": "Sleep has a big effect on your mood."
+    },
+    {
+      "word": "energy",
+      "part_of_speech": "noun",
+      "meaning_in_context": "The strength to be active and do things",
+      "example": "Exercise gives you more energy."
+    },
+    {
+      "word": "balance",
+      "part_of_speech": "noun",
+      "meaning_in_context": "Having the right amount of different things",
+      "example": "Balance is important in life."
+    },
+    {
+      "word": "variety",
+      "part_of_speech": "noun",
+      "meaning_in_context": "Many different types of something",
+      "example": "Eat a variety of vegetables."
+    },
+    {
+      "word": "protein",
+      "part_of_speech": "noun",
+      "meaning_in_context": "A nutrient in food that helps build your body",
+      "example": "Eggs are a good source of protein."
+    },
+    {
+      "word": "avoid",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To stay away from something on purpose",
+      "example": "Avoid eating too much sugar."
+    },
+    {
+      "word": "concentrate",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To focus your attention on something",
+      "example": "It's hard to concentrate when tired."
+    },
+    {
+      "word": "results",
+      "part_of_speech": "noun (pl.)",
+      "meaning_in_context": "The outcome or effect of an action",
+      "example": "Hard work produces good results."
+    },
+    {
+      "word": "diet",
+      "part_of_speech": "noun",
+      "meaning_in_context": "The food you regularly eat",
+      "example": "A healthy diet includes vegetables."
+    },
+    {
+      "word": "meals",
+      "part_of_speech": "noun (pl.)",
+      "meaning_in_context": "Occasions when you eat food",
+      "example": "I have three meals a day."
+    },
+    {
+      "word": "lead",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To cause something to happen",
+      "example": "Bad habits can lead to problems."
+    },
+    {
+      "word": "forget",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To not remember to do something",
+      "example": "Don't forget to drink water."
+    },
+    {
+      "word": "whole",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Complete; not processed or refined",
+      "example": "Whole grains are healthier."
+    },
+    {
+      "word": "add",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To put something extra into something",
+      "example": "Add more vegetables to your diet."
+    },
+    {
+      "word": "enough",
+      "part_of_speech": "determiner",
+      "meaning_in_context": "As much as is needed",
+      "example": "Make sure you sleep enough."
+    }
+  ],
+  "speaking_prompts": [
+    "Describe your typical diet. Is it balanced? What could you improve?",
+    "What food habits do you find hard to change? Why?",
+    "How does what you eat affect how you feel during the day?",
+    "Talk about a small change you have made or want to make to your health."
+  ],
+  "grammar_focus": {
+    "title": "Imperatives for advice and instructions",
+    "explanation": "The passage uses imperative sentences to give advice: 'Try to eat a variety', 'Avoid eating too much sugar', 'Start with small changes'. Imperatives use the base form of the verb with no subject. Use 'Don't' for negative imperatives.",
+    "examples": [
+      "Drink more water every day.",
+      "Avoid processed food.",
+      "Add vegetables to every meal.",
+      "Don't forget to sleep well."
+    ],
+    "practice_task": "Write 4 pieces of advice for a friend who wants to eat more healthily. Use imperatives."
+  }
+}
+
+{
+  "level": "A2 Foundation",
+  "unit_number": 4,
+  "unit_title": "Setting a goal",
+  "topic": "Work and goals",
+  "passage": [
+    "A goal is something you want to achieve in the future. Without a goal, it is easy to feel lost or unsure about what to do next. Goals give us direction and motivation.",
+    "The best goals are specific. Instead of saying 'I want to improve my English', say 'I want to learn 10 new words every week'. A specific goal is easier to measure, you can see if you are making progress or not.",
+    "It is also important to be realistic. A goal that is too difficult will make you feel discouraged. Start with something achievable, and then make your goals bigger as you improve.",
+    "When you reach a goal, celebrate it, even if it is small. Celebrating progress helps you stay motivated and reminds you that you are moving in the right direction. Then set a new goal and keep going."
+  ],
+  "vocabulary": [
+    {
+      "word": "achieve",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To successfully reach a goal after effort",
+      "example": "She achieved her dream."
+    },
+    {
+      "word": "direction",
+      "part_of_speech": "noun",
+      "meaning_in_context": "The path or purpose you are moving towards",
+      "example": "Set goals to find direction."
+    },
+    {
+      "word": "motivation",
+      "part_of_speech": "noun",
+      "meaning_in_context": "The reason or desire to do something",
+      "example": "What is your motivation?"
+    },
+    {
+      "word": "specific",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Clear and detailed; not general",
+      "example": "Be specific about your goals."
+    },
+    {
+      "word": "measure",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To find out the size or amount of something",
+      "example": "How do you measure success?"
+    },
+    {
+      "word": "progress",
+      "part_of_speech": "noun",
+      "meaning_in_context": "Moving forward; improvement over time",
+      "example": "Track your progress weekly."
+    },
+    {
+      "word": "realistic",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Reasonable and possible to achieve",
+      "example": "Set realistic expectations."
+    },
+    {
+      "word": "discouraged",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Feeling less confident or motivated after difficulty",
+      "example": "Don't feel discouraged by setbacks."
+    },
+    {
+      "word": "achievable",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Possible to do; within your ability",
+      "example": "Start with achievable goals."
+    },
+    {
+      "word": "celebrate",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To do something enjoyable to mark a success",
+      "example": "Celebrate your small wins."
+    },
+    {
+      "word": "remind",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To help someone remember something",
+      "example": "Remind yourself why you started."
+    },
+    {
+      "word": "reach",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To arrive at or accomplish something",
+      "example": "I want to reach my target."
+    },
+    {
+      "word": "improve",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To get better at something",
+      "example": "You improve with practice."
+    },
+    {
+      "word": "lost",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Unsure of where to go or what to do",
+      "example": "Without goals, I feel lost."
+    },
+    {
+      "word": "keep",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To continue doing something",
+      "example": "Keep working every day."
+    }
+  ],
+  "speaking_prompts": [
+    "What is a goal you have right now? Is it specific and realistic?",
+    "Talk about a goal you have already achieved. How did it feel?",
+    "How do you stay motivated when progress is slow?",
+    "What is the difference between a dream and a realistic goal?"
+  ],
+  "grammar_focus": {
+    "title": "Want to / Would like to for goals and wishes",
+    "explanation": "We use 'want to' and 'would like to' to talk about our goals and desires. 'Want to' is more direct. 'Would like to' is more polite and formal. Both are followed by the infinitive (base verb).",
+    "examples": [
+      "I want to improve my English.",
+      "I would like to work abroad.",
+      "She wants to achieve her goals.",
+      "They would like to travel more."
+    ],
+    "practice_task": "Write 3 sentences about your personal or professional goals using 'want to' or 'would like to'."
+  }
+}
+
+{
+  "level": "A2 Foundation",
+  "unit_number": 5,
+  "unit_title": "Why people travel",
+  "topic": "Travel and places",
+  "passage": [
+    "People travel for many different reasons. Some travel for fun and relaxation. Others travel to learn about different cultures or to visit family. Some people travel for work.",
+    "When you visit a new place, you experience things that are different from your normal life. You might try new food, hear a new language, or see beautiful buildings and nature. These experiences can change the way you think about the world.",
+    "Travel can also be challenging. You might get lost, miss your flight, or not understand the local language. But these challenges are also part of the experience. They teach you to be flexible and to solve problems.",
+    "You do not always need to travel far to benefit from these experiences. Even visiting a new part of your own city can feel like an adventure. The important thing is to stay curious and open to new things."
+  ],
+  "vocabulary": [
+    {
+      "word": "relaxation",
+      "part_of_speech": "noun",
+      "meaning_in_context": "The state of being free from stress and worry",
+      "example": "Travel offers relaxation."
+    },
+    {
+      "word": "culture",
+      "part_of_speech": "noun",
+      "meaning_in_context": "The customs, beliefs, and arts of a group of people",
+      "example": "I love learning about other cultures."
+    },
+    {
+      "word": "experience",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To feel or live through something",
+      "example": "Travel lets you experience new things."
+    },
+    {
+      "word": "normal",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Usual; what typically happens",
+      "example": "This is not my normal routine."
+    },
+    {
+      "word": "challenging",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Difficult in a way that requires effort",
+      "example": "Learning a language is challenging."
+    },
+    {
+      "word": "flexible",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Able to change and adapt easily",
+      "example": "You need to be flexible when travelling."
+    },
+    {
+      "word": "solve",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To find an answer to a problem",
+      "example": "How do you solve this problem?"
+    },
+    {
+      "word": "benefit",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To gain something useful or helpful",
+      "example": "Everyone benefits from exercise."
+    },
+    {
+      "word": "adventure",
+      "part_of_speech": "noun",
+      "meaning_in_context": "An exciting or unusual experience",
+      "example": "Life is an adventure."
+    },
+    {
+      "word": "curious",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Wanting to learn or know more about something",
+      "example": "Stay curious and keep learning."
+    },
+    {
+      "word": "local",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Relating to the area where you are",
+      "example": "Try the local food."
+    },
+    {
+      "word": "miss",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To fail to catch or be at something",
+      "example": "Don't miss your flight."
+    },
+    {
+      "word": "nature",
+      "part_of_speech": "noun",
+      "meaning_in_context": "The natural world; plants, animals, land",
+      "example": "I love spending time in nature."
+    },
+    {
+      "word": "open",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Willing to accept new ideas or experiences",
+      "example": "Stay open to new experiences."
+    },
+    {
+      "word": "visit",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To go to a place for a period of time",
+      "example": "I want to visit Japan."
+    }
+  ],
+  "speaking_prompts": [
+    "Describe a place you have visited. What did you experience there?",
+    "What challenges have you faced when travelling or visiting a new place?",
+    "Do you think travel changes people? How?",
+    "You don't always need to travel far for an adventure. Do you agree?"
+  ],
+  "grammar_focus": {
+    "title": "Past simple for completed experiences",
+    "explanation": "We use the past simple to talk about completed experiences. Regular verbs add -ed: 'visited', 'tried', 'learned'. Irregular verbs change form: 'went', 'saw', 'heard'. Look for the time markers: 'last year', 'yesterday', 'in 2020'.",
+    "examples": [
+      "I visited a new city last summer.",
+      "She tried local food and loved it.",
+      "We saw beautiful mountains.",
+      "They went to three countries in one week."
+    ],
+    "practice_task": "Write a short paragraph (4-5 sentences) about a place you visited or a new experience you had. Use the past simple."
+  }
+}
+
+{
+  "level": "A2 Foundation",
+  "unit_number": 6,
+  "unit_title": "Understanding how you feel",
+  "topic": "Emotions",
+  "passage": [
+    "Emotions are a natural part of life. We all feel happy, sad, angry, nervous, or excited at different times. Understanding your emotions can help you manage them better.",
+    "Sometimes we feel an emotion without knowing why. This is normal. Emotions can be connected to things that happened in the past or to worries about the future. When you feel a strong emotion, try to stop and ask yourself: what is causing this feeling?",
+    "It is important not to hide your emotions all the time. Sharing how you feel with someone you trust can help you feel lighter. Talking about your emotions also helps other people understand you better.",
+    "At the same time, try not to react too quickly when you feel a strong emotion like anger. Give yourself time to calm down before you speak or act. This can prevent many problems in your relationships."
+  ],
+  "vocabulary": [
+    {
+      "word": "emotion",
+      "part_of_speech": "noun",
+      "meaning_in_context": "A feeling such as happiness, sadness, or anger",
+      "example": "Express your emotions clearly."
+    },
+    {
+      "word": "manage",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To deal with something in a controlled way",
+      "example": "Learn to manage your stress."
+    },
+    {
+      "word": "connected",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Linked or related to something else",
+      "example": "Stress is connected to poor sleep."
+    },
+    {
+      "word": "worry",
+      "part_of_speech": "noun/verb",
+      "meaning_in_context": "A feeling of anxiety about something that might happen",
+      "example": "Don't worry about things you can't control."
+    },
+    {
+      "word": "strong",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Powerful and intense",
+      "example": "She felt a strong sense of pride."
+    },
+    {
+      "word": "hide",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To keep something secret; not show it",
+      "example": "Don't hide how you feel."
+    },
+    {
+      "word": "share",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To tell or give something to others",
+      "example": "Share your feelings with a friend."
+    },
+    {
+      "word": "trust",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To believe someone is reliable and honest",
+      "example": "Talk to someone you trust."
+    },
+    {
+      "word": "react",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To respond to something that happens",
+      "example": "Try not to react too quickly."
+    },
+    {
+      "word": "prevent",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To stop something bad from happening",
+      "example": "Communication can prevent problems."
+    },
+    {
+      "word": "cause",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To make something happen",
+      "example": "What is causing this feeling?"
+    },
+    {
+      "word": "calm",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To become or make less anxious or upset",
+      "example": "Take time to calm down first."
+    },
+    {
+      "word": "relationship",
+      "part_of_speech": "noun",
+      "meaning_in_context": "A connection between two or more people",
+      "example": "Good communication builds relationships."
+    },
+    {
+      "word": "natural",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Normal; existing without being forced",
+      "example": "It's natural to feel nervous."
+    },
+    {
+      "word": "lighter",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Feeling less burdened or worried",
+      "example": "Talking made me feel lighter."
+    }
+  ],
+  "speaking_prompts": [
+    "How do you manage strong emotions like anger or anxiety?",
+    "Do you find it easy or difficult to share your feelings? Why?",
+    "Talk about a time when you reacted too quickly to something. What happened?",
+    "What emotion do you find hardest to manage? How do you deal with it?"
+  ],
+  "grammar_focus": {
+    "title": "When / Before / After, time clauses",
+    "explanation": "The passage uses time clauses: 'When you feel a strong emotion, try to stop', 'before you speak or act'. These clauses tell us the timing of actions. The time clause can come first or second in the sentence.",
+    "examples": [
+      "When I feel nervous, I take deep breaths.",
+      "Before you react, give yourself a moment.",
+      "After she calmed down, she spoke clearly.",
+      "I feel better when I share my feelings."
+    ],
+    "practice_task": "Write 3 sentences about your own emotions using 'when', 'before', or 'after'."
+  }
+}{
+  "level": "A2 Foundation",
+  "unit_number": 7,
+  "unit_title": "How we learn best",
+  "topic": "Learning and education",
+  "passage": [
+    "People learn in different ways. Some people learn best by reading. Others prefer to listen or to watch. And some people learn by doing, by practising something until they understand it.",
+    "Knowing how you learn best is very useful. It can help you study more effectively and feel less frustrated when something is difficult to understand.",
+    "One thing that all learners have in common is the need for repetition. When you see or hear something many times, your brain begins to remember it. This is why reviewing new information is so important.",
+    "Mistakes are also a key part of learning. When you make a mistake, your brain works hard to understand what went wrong. This process actually helps you remember more. So instead of feeling embarrassed about mistakes, try to see them as opportunities to grow."
+  ],
+  "vocabulary": [
+    {
+      "word": "prefer",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To like one option more than another",
+      "example": "I prefer learning by doing."
+    },
+    {
+      "word": "practise",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To do something repeatedly to improve",
+      "example": "Practise speaking every day."
+    },
+    {
+      "word": "effectively",
+      "part_of_speech": "adverb",
+      "meaning_in_context": "In a way that produces good results",
+      "example": "Study more effectively."
+    },
+    {
+      "word": "frustrated",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Feeling upset because you cannot do something",
+      "example": "I feel frustrated when I make mistakes."
+    },
+    {
+      "word": "repetition",
+      "part_of_speech": "noun",
+      "meaning_in_context": "The act of doing or saying something many times",
+      "example": "Repetition helps you remember."
+    },
+    {
+      "word": "review",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To look at something again to remember or check it",
+      "example": "Review your notes after class."
+    },
+    {
+      "word": "mistake",
+      "part_of_speech": "noun",
+      "meaning_in_context": "Something done incorrectly",
+      "example": "Everyone makes mistakes."
+    },
+    {
+      "word": "process",
+      "part_of_speech": "noun",
+      "meaning_in_context": "A series of steps that lead to a result",
+      "example": "Learning is a slow process."
+    },
+    {
+      "word": "embarrassed",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Feeling uncomfortable because of a mistake",
+      "example": "Don't be embarrassed by errors."
+    },
+    {
+      "word": "opportunity",
+      "part_of_speech": "noun",
+      "meaning_in_context": "A chance to do or achieve something",
+      "example": "See mistakes as opportunities."
+    },
+    {
+      "word": "common",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Shared by many people; happening often",
+      "example": "This is a common mistake."
+    },
+    {
+      "word": "brain",
+      "part_of_speech": "noun",
+      "meaning_in_context": "The organ in your head that controls thinking",
+      "example": "Your brain needs rest too."
+    },
+    {
+      "word": "remember",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To keep information in your mind",
+      "example": "Repeat things to remember them."
+    },
+    {
+      "word": "difficult",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Not easy; requiring effort",
+      "example": "Grammar can be difficult at first."
+    },
+    {
+      "word": "grow",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To develop and improve over time",
+      "example": "Mistakes help you grow."
+    }
+  ],
+  "speaking_prompts": [
+    "How do you learn best, by reading, listening, or doing? Give examples.",
+    "Talk about a time you learned something from a mistake.",
+    "How do you review new information to help yourself remember it?",
+    "Do you feel embarrassed when you make mistakes in English? How do you deal with that?"
+  ],
+  "grammar_focus": {
+    "title": "By + -ing to explain how",
+    "explanation": "We use 'by + -ing' to explain the method or way of doing something. In the passage: 'learn by doing', 'by practising something'. The -ing form comes directly after 'by'.",
+    "examples": [
+      "She improved by practising every day.",
+      "I learn by making flashcards.",
+      "He got better by reading more.",
+      "You can grow by accepting mistakes."
+    ],
+    "practice_task": "Write 3 sentences about how you do something, using 'by + -ing'."
+  }
+}
+
+{
+  "level": "A2 Foundation",
+  "unit_number": 8,
+  "unit_title": "Spending wisely",
+  "topic": "Money and spending",
+  "passage": [
+    "Money is something most people think about every day. We earn it, spend it, and sometimes worry about not having enough. Learning to manage money well is one of the most useful skills you can have.",
+    "One simple way to manage money is to make a budget. A budget is a plan for how you will spend your money. It helps you see where your money goes and decide what is necessary and what is not.",
+    "Many people spend money on things they do not really need. This is sometimes called impulsive spending, buying something because you want it right now, not because it is useful or important.",
+    "A good habit is to wait 24 hours before buying something you want but do not need. Often, after a day, the feeling passes and you realise you do not actually want it. This small trick can save you a lot of money over time."
+  ],
+  "vocabulary": [
+    {
+      "word": "earn",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To receive money in exchange for work",
+      "example": "She earns a good salary."
+    },
+    {
+      "word": "budget",
+      "part_of_speech": "noun",
+      "meaning_in_context": "A plan for how to spend money",
+      "example": "Make a monthly budget."
+    },
+    {
+      "word": "necessary",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Something you must have or do",
+      "example": "Food is a necessary expense."
+    },
+    {
+      "word": "impulsive",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Done quickly without thinking carefully",
+      "example": "Avoid impulsive decisions."
+    },
+    {
+      "word": "realise",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To become aware of something; to understand",
+      "example": "I realised I didn't need it."
+    },
+    {
+      "word": "save",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To keep money rather than spending it",
+      "example": "Try to save 10% of your income."
+    },
+    {
+      "word": "useful",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Helpful and practical",
+      "example": "This is a very useful skill."
+    },
+    {
+      "word": "trick",
+      "part_of_speech": "noun",
+      "meaning_in_context": "A clever way of doing something",
+      "example": "Here is a useful trick."
+    },
+    {
+      "word": "passes",
+      "part_of_speech": "verb",
+      "meaning_in_context": "Goes away or ends (of a feeling or time)",
+      "example": "The feeling will pass."
+    },
+    {
+      "word": "decide",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To choose one option after thinking",
+      "example": "Decide what is important to you."
+    },
+    {
+      "word": "plan",
+      "part_of_speech": "noun",
+      "meaning_in_context": "An organised set of ideas to achieve something",
+      "example": "Have a plan for your money."
+    },
+    {
+      "word": "spend",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To use money to pay for things",
+      "example": "Don't spend more than you earn."
+    },
+    {
+      "word": "actually",
+      "part_of_speech": "adverb",
+      "meaning_in_context": "In reality; in fact",
+      "example": "I actually don't need this."
+    },
+    {
+      "word": "simple",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Easy to understand or do",
+      "example": "Start with a simple plan."
+    },
+    {
+      "word": "over time",
+      "part_of_speech": "phrase",
+      "meaning_in_context": "Gradually, during a long period",
+      "example": "Small savings add up over time."
+    }
+  ],
+  "speaking_prompts": [
+    "Do you have a budget? How do you manage your money?",
+    "Talk about something you bought impulsively. Did you regret it?",
+    "What is the difference between something necessary and something you just want?",
+    "What is a simple money habit that you think is useful?"
+  ],
+  "grammar_focus": {
+    "title": "Comparative adjectives",
+    "explanation": "We compare things using comparative adjectives. Short adjectives add -er: simple -> simpler. Long adjectives use 'more': impulsive -> more impulsive. Always use 'than' when comparing two things.",
+    "examples": [
+      "A budget is simpler than you think.",
+      "This option is more useful than the other.",
+      "She is more careful with money now.",
+      "Saving is easier when you have a plan."
+    ],
+    "practice_task": "Write 3 sentences comparing two things related to money, habits, or daily life. Use comparative adjectives."
+  }
+}
+
+{
+  "level": "A2 Foundation",
+  "unit_number": 9,
+  "unit_title": "The importance of green spaces",
+  "topic": "Nature and environment",
+  "passage": [
+    "Green spaces are areas of nature in or near cities, like parks, gardens, or forests. Research shows that spending time in green spaces is good for both your physical and mental health.",
+    "When people spend time in nature, their stress levels often decrease. The fresh air, the sounds of birds, and the sight of trees and plants help the mind relax. Some scientists believe that we have a natural connection to nature that goes back thousands of years.",
+    "Green spaces are also important for communities. They give people a place to exercise, meet others, and relax outside. Children who grow up near green spaces tend to be more active and creative.",
+    "Unfortunately, in many cities, green spaces are disappearing as more buildings are constructed. This is why it is important to protect and create more green areas, not just for nature, but for the wellbeing of the people who live there."
+  ],
+  "vocabulary": [
+    {
+      "word": "research",
+      "part_of_speech": "noun",
+      "meaning_in_context": "Careful study to find new information",
+      "example": "Research shows this is effective."
+    },
+    {
+      "word": "physical",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Relating to the body",
+      "example": "Physical activity is important."
+    },
+    {
+      "word": "mental",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Relating to the mind",
+      "example": "Take care of your mental health."
+    },
+    {
+      "word": "decrease",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To become smaller or less",
+      "example": "Stress levels decrease in nature."
+    },
+    {
+      "word": "connection",
+      "part_of_speech": "noun",
+      "meaning_in_context": "A link or relationship between things",
+      "example": "There is a connection between sleep and mood."
+    },
+    {
+      "word": "community",
+      "part_of_speech": "noun",
+      "meaning_in_context": "A group of people living in the same area",
+      "example": "Parks benefit the whole community."
+    },
+    {
+      "word": "tend to",
+      "part_of_speech": "phrase",
+      "meaning_in_context": "To usually do or be something",
+      "example": "Children tend to learn quickly."
+    },
+    {
+      "word": "creative",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Good at thinking of new ideas",
+      "example": "Nature makes people more creative."
+    },
+    {
+      "word": "unfortunately",
+      "part_of_speech": "adverb",
+      "meaning_in_context": "Sadly; used when something is bad",
+      "example": "Unfortunately, many parks are closing."
+    },
+    {
+      "word": "disappearing",
+      "part_of_speech": "verb",
+      "meaning_in_context": "Going away or becoming less visible",
+      "example": "Green spaces are disappearing."
+    },
+    {
+      "word": "construct",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To build something",
+      "example": "They constructed a new building."
+    },
+    {
+      "word": "protect",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To keep something safe from harm",
+      "example": "We must protect the environment."
+    },
+    {
+      "word": "wellbeing",
+      "part_of_speech": "noun",
+      "meaning_in_context": "A state of being happy, healthy, and comfortable",
+      "example": "Green spaces improve wellbeing."
+    },
+    {
+      "word": "active",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Moving and doing physical activities",
+      "example": "Stay active every day."
+    },
+    {
+      "word": "area",
+      "part_of_speech": "noun",
+      "meaning_in_context": "A part of a place or region",
+      "example": "This is a beautiful area."
+    }
+  ],
+  "speaking_prompts": [
+    "How often do you spend time in nature or green spaces? How does it make you feel?",
+    "Do you think cities should have more green spaces? Why or why not?",
+    "Talk about a place in nature that is special to you.",
+    "How does your community benefit from parks or outdoor spaces?"
+  ],
+  "grammar_focus": {
+    "title": "Present continuous for ongoing changes",
+    "explanation": "We use the present continuous (am/is/are+-ing) to describe things that are changing or happening right now or around now. In the passage: 'green spaces are disappearing'. This shows an ongoing trend.",
+    "examples": [
+      "Green spaces are disappearing in many cities.",
+      "The climate is changing quickly.",
+      "More people are moving to cities.",
+      "Technology is improving every year."
+    ],
+    "practice_task": "Write 3 sentences about changes happening in the world or your life right now. Use the present continuous."
+  }
+}
+
+{
+  "level": "A2 Foundation",
+  "unit_number": 10,
+  "unit_title": "How we use our time",
+  "topic": "Time and priorities",
+  "passage": [
+    "We all have the same 24 hours in a day. But some people seem to do much more with their time than others. What is their secret?",
+    "The answer is often about priorities. A priority is something that is more important than other things. When you know your priorities, you spend your time on things that matter, not on things that are just urgent but not important.",
+    "Many people spend a lot of time on things that feel busy but do not help them reach their goals. Checking your phone constantly or watching too much television are common examples.",
+    "One useful approach is to decide the three most important things you need to do each day and focus on those first. This is sometimes called the 'three big tasks' method. When you finish those, everything else feels easier. Try it for one week and notice the difference it makes."
+  ],
+  "vocabulary": [
+    {
+      "word": "priority",
+      "part_of_speech": "noun",
+      "meaning_in_context": "Something more important than other things",
+      "example": "Family is my top priority."
+    },
+    {
+      "word": "matter",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To be important or significant",
+      "example": "Focus on what truly matters."
+    },
+    {
+      "word": "urgent",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Needing immediate attention",
+      "example": "This is urgent, do it now."
+    },
+    {
+      "word": "constantly",
+      "part_of_speech": "adverb",
+      "meaning_in_context": "All the time; without stopping",
+      "example": "I constantly check my messages."
+    },
+    {
+      "word": "approach",
+      "part_of_speech": "noun",
+      "meaning_in_context": "A way of dealing with something",
+      "example": "Try a different approach."
+    },
+    {
+      "word": "focus",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To give your full attention to something",
+      "example": "Focus on one task at a time."
+    },
+    {
+      "word": "method",
+      "part_of_speech": "noun",
+      "meaning_in_context": "A particular way of doing something",
+      "example": "This method is very effective."
+    },
+    {
+      "word": "difference",
+      "part_of_speech": "noun",
+      "meaning_in_context": "A change or contrast between two things",
+      "example": "Notice the difference it makes."
+    },
+    {
+      "word": "seem",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To appear to be a certain way",
+      "example": "She seems very organised."
+    },
+    {
+      "word": "goal",
+      "part_of_speech": "noun",
+      "meaning_in_context": "Something you want to achieve",
+      "example": "Work towards your goals."
+    },
+    {
+      "word": "useful",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Practical and helpful",
+      "example": "This is a useful tool."
+    },
+    {
+      "word": "common",
+      "part_of_speech": "adjective",
+      "meaning_in_context": "Happening often or found in many places",
+      "example": "This is a very common problem."
+    },
+    {
+      "word": "finish",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To complete something",
+      "example": "Finish the most important task first."
+    },
+    {
+      "word": "reach",
+      "part_of_speech": "verb",
+      "meaning_in_context": "To arrive at or achieve something",
+      "example": "How will you reach your goals?"
+    },
+    {
+      "word": "secret",
+      "part_of_speech": "noun",
+      "meaning_in_context": "The key reason behind a success",
+      "example": "What is the secret to success?"
+    }
+  ],
+  "speaking_prompts": [
+    "What are your top three priorities in life right now? Why?",
+    "What activities waste your time the most? How could you change this?",
+    "Do you have a method for managing your time? Does it work?",
+    "What is the difference between something urgent and something important?"
+  ],
+  "grammar_focus": {
+    "title": "Comparative: more than / less than",
+    "explanation": "We use 'more than' and 'less than' to compare things. Multi-syllable adjectives always use 'more' or 'less': 'more important than', 'less urgent than'. This is different from short adjective comparatives (-er).",
+    "examples": [
+      "Rest is more important than staying busy.",
+      "Email is less urgent than you think.",
+      "This method is more effective than the old one.",
+      "Sleep matters more than most people realise."
+    ],
+    "practice_task": "Write 3 comparisons about how you use your time. Use 'more than' or 'less than'."
+  }
+}

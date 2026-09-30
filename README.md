@@ -21,7 +21,7 @@ Open [http://localhost:4173](http://localhost:4173). To choose a different port,
 - `/learn/b2`, `/learn/b2-plus`, `/learn/c1` — planned states where mapped catalog resources exist; these contain no units
 - `/about` — project information
 
-The supplied structured content contains A2 (10 units), B1 (12), and B1+ (12). B2, B2+, and C1 do not have structured units here. No B1+ units 13–24, review source material, or passage timing maps are invented.
+The supplied structured content contains Speak Forge A2 (10 units), Speak Forge B1 (12), and Speak Forge B1+ (12). Catalog display names do not rename the original PDFs. B2, B2+, and C1 do not have structured units here. No B1+ units 13–24, review source material, or passage timing maps are invented.
 
 ## Content and progress
 

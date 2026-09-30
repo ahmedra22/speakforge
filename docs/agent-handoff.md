@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-09-30  
 **Project owner/creator:** Ahmed Ramadan  
-**Current phase:** Phase 10 final polish is implemented on `feature/final-polish` (`97f26fa`). Automated checks pass; browser, Lighthouse, and live-provider limitations are recorded in the Phase 10 handoff below.
+**Current phase:** Phase 10 final polish and browser annotation updates are committed on `feature/final-polish` (`ae2b4b8`). Automated checks pass; browser, Lighthouse, and live-provider limitations are recorded below.
 
 ## Project overview
 
@@ -396,3 +396,12 @@ This phase audited the available resources, inspected the B1 reference UX, recor
 - Automated tests, content validation, production build, and production smoke checks pass.
 - The product is **READY WITH KNOWN LIMITATIONS**, not declared fully production ready, until browser/device/print and Lighthouse checks can run and live AI behavior is verified with a configured provider.
 - This is the final planned implementation phase. No additional product phase was started.
+
+### Browser annotation follow-up (2026-09-30)
+
+- Follow-up implementation commit: `ae2b4b8` — `Apply catalog browser annotations`.
+- Updated catalog display names to Speak Forge A2, B1, B1+, B2, and B2+. C1 retains its existing planned label. The mapped source PDF paths and original resource files are unchanged.
+- Applied the annotated backgrounds at their owning level scopes: A2 `.unit-section` uses `#dedede`; B1 `.book-unit-group` uses `#ededed`; B1+ `.book-unit-group` uses `#e8e8e8`. The rules are not limited to the 887 px screenshot viewport.
+- Added regression assertions for all three level-scoped colors, renamed available/planned book cards, and future-level availability.
+- Final follow-up verification: `npm test` **61 passed, 0 failed**; `npm run validate:content` passed for 34 units with 45 informational warnings; `npm run build` passed; `npm run verify:production` passed; `git diff --check` passed.
+- Browser runtime was retried after reset but exited before connecting to the open local page (`trusted Node process exited unexpectedly; kernel reset`). The code was verified through route rendering, CSS-scope regression tests, and the production smoke check; no visual browser result is claimed.

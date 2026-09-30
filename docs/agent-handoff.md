@@ -10,7 +10,7 @@ SpeakForge is intended to be a scalable, data-driven English-learning platform o
 
 ## Current status
 
-- Git initialized on the default `master` branch; no commit was created during this phase. `.gitignore`, npm scripts, Node.js ESM source, tests, and route descriptors are now present.
+- Git initialized on `master`; initial commit `866ea68` records the source resources and foundation. `.gitignore`, npm scripts, Node.js ESM source, tests, and route descriptors are present.
 - Architecture recommendation and audit findings are in [architecture.md](architecture.md).
 - No polished website, AI practice, full audio player, unit page, or progress implementation has been built.
 - Supplied specs are placeholders (53 bytes each); they need real product requirements before implementation can confidently enforce them.
@@ -111,7 +111,7 @@ This phase audited the available resources, inspected the B1 reference UX, recor
 ### Git and source status
 
 - `git init` completed. Git reports the directory owner differs from the sandbox identity; use a per-command `safe.directory` setting for Git operations rather than changing global config.
-- The configured global Git author is present. No commit has been created yet. All supplied resources remain tracked as initial untracked repository content; source files were read only by the implementation.
+- The configured Git author was used for initial commit `866ea68` (`Set up SpeakForge content engine foundation`). Git operations require a per-command `safe.directory` setting because the sandbox identity differs from the workspace owner.
 - `resources/structured/*.json`, PDFs, MP3s, covers, and reference materials were not edited.
 
 ### Known issues and next phase
@@ -119,3 +119,4 @@ This phase audited the available resources, inspected the B1 reference UX, recor
 - The six product specification files remain placeholders and are not used as requirements.
 - The original B1 and B1+ source framing was handled by the same tolerant parser; any future source format should be covered by fixtures.
 - Next phase: agree final product constraints, then build the catalog/level/book UI on the stable loader and route contracts. Keep unit page, audio-player experience, AI Practice, and cloud persistence in their later phases.
+

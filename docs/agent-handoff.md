@@ -471,3 +471,36 @@ The existing `public/app.js` controllers continue to connect `AudioPlayer`, the 
 - Branch: `codex/responsive-device-support`.
 - Implementation commit: `c1d1e1c` — `Improve responsive device layouts`.
 - No new product phase or feature set was started.
+
+## Content expansion readiness — 2026-10-01
+
+### Result
+
+The same generic catalog, level renderer, book renderer, unit list, unit route, UnitPage, review sequencing, and progress model support additional books through registry/content/media data. A book can be attached to an existing level or a new level; the level/book relationship supports multiple books per level. No A2/B1/B1+ or book-number-specific page components were found. Existing A2/B1/B1+ names in smoke tests and unit tests identify known product fixtures; runtime page selection is driven by the catalog and route slugs.
+
+### Architecture changes
+
+- src/content/manifests/catalog.js: audio path templates now live on each source-set descriptor instead of being reconstructed from a level-specific prefix. Removed the separate expected-count map; unit totals derive from each source file.
+- src/content/repository/content-loader.js: createContentLoader accepts an injected catalog and root for isolated content validation and fixture work; production defaults still use the central catalog. Book and unit discovery remains registry-driven.
+- src/content/normalize/normalize-unit.js: optional paragraph-audio references and inline timing metadata pass through the generic normalized unit model.
+- src/content/validate/validate-content.js and scripts/validate-content.js: validation is reusable against any catalog/root and checks level/book/source-set relationships, unique IDs/slugs, required unit fields, unit metadata, mapped audio, book/level cover and PDF references, optional paragraph-audio paths, and optional timing maps. Available books require one source set; planned books do not.
+- tests/content-expansion.test.js: creates minimal temporary files for an extra book at B1 and a book on a new C1 level, checks generic catalog/book/level/unit rendering and progress, checks optional media metadata, exercises validation failures, then removes all temporary fixture folders and registry entries.
+
+### New book workflow
+
+See README.md — How to Add a New Book for the operator sequence: register level/book/source-set metadata in src/content/manifests/catalog.js; add structured content under resources/structured/<book-id>/; place audio at the declared template paths and covers under resources/covers/<book-id>/; rely on shared parsing/normalization; run content validation and tests; run locally, build, and smoke-check production output.
+
+Parallel content work should use unique IDs and per-book resource directories. Contributors can prepare content, audio mappings, and cover metadata without modifying unrelated UI. Since the registry is a shared file, an integration owner merges each descriptor/level registration to avoid competing registry edits. Keep identifiers stable after progress has been saved.
+
+### Verification
+
+- Temporary future-book/future-level fixture: pending final rerun.
+- Full test suite: pending final rerun.
+- Content validation: pending final rerun.
+- Production build: pending final rerun.
+- Production smoke test: pending final rerun.
+- Regression coverage: existing tests cover audio, listen tracking and passage unlock, vocabulary/TTS, Word Tracking, speaking, navigation, and content loading; full results will be recorded after rerun.
+
+### Scope limits
+
+No real course content or novel content was added. Current concrete content item types are units and generated reviews. Novel-length material will need a generic content-item/route extension when specified; this task does not claim that a novel reader already exists. No existing learning feature was intentionally redesigned.

@@ -17,8 +17,9 @@ export const levels = [
  {id:'c1',label:'C1',order:6,status:'planned',bookIds:['c1'],cover:image('resources/covers/c1/C1.jfif')},
 ];
 export const sourceSets = [
- {levelId:'a2',bookId:'a2-foundation',sourceFile:'resources/structured/a2/units.a2.json',audioDirectory:'resources/audio/a2',audioPrefix:'A2'},
- {levelId:'b1',bookId:'b1-core',sourceFile:'resources/structured/b1/units.b1.json',audioDirectory:'resources/audio/b1',audioPrefix:'B1'},
- {levelId:'b1-plus',bookId:'b1-plus-bridge',sourceFile:'resources/structured/b1-plus/units.b1-plus.json',audioDirectory:'resources/audio/b1-plus',audioPrefix:'B1+'},
+ {levelId:'a2',bookId:'a2-foundation',sourceFile:'resources/structured/a2/units.a2.json',audioPathTemplate:'resources/audio/a2/A2 Unit {number}.mp3'},
+ {levelId:'b1',bookId:'b1-core',sourceFile:'resources/structured/b1/units.b1.json',audioPathTemplate:'resources/audio/b1/B1 Unit {number}.mp3'},
+ {levelId:'b1-plus',bookId:'b1-plus-bridge',sourceFile:'resources/structured/b1-plus/units.b1-plus.json',audioPathTemplate:'resources/audio/b1-plus/B1+ Unit {number}.mp3'},
 ];
-export const expectedUnitCounts = {a2:10,b1:12,'b1-plus':12};
+
+

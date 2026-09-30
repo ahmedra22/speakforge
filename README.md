@@ -45,3 +45,32 @@ The content validator currently reports repeated vocabulary as informational war
 ## Known verification limits
 
 The in-app computer-use runtime failed to initialize. A separate headless Edge production session visually checked phone (375px), tablet (768px), and desktop (1366px) layouts, plus 50 Home/level/book/unit/review page checks across widths from 320px to 1920px. Responsive emulation passed with no horizontal overflow, clipped unit titles, or resume-card overlap; mobile navigation and full-screen AI Practice were exercised. These checks do not represent physical Android/iOS devices or Safari/Firefox. Screen-reader/full keyboard walkthroughs, print preview, microphone recording, audible TTS, iOS safe-area hardware behavior, and Lighthouse scoring were not completed. No AI provider credentials were configured, so live model responses were not tested. See `docs/agent-handoff.md` for the latest exact QA results and limitations.
+
+## How to Add a New Book
+
+A book is registered through data and assets; the catalog, level/book pages, unit list, unit route, generic UnitPage, review sequence, and progress aggregation are shared.
+
+1. **Add metadata** in src/content/manifests/catalog.js:
+   - Add one books entry with a stable id, routeSlug, levelId, display title, status: 'available', cover, and optional reviewFrequency / aiPracticeRequired.
+   - Add its ID to the owning level's bookIds. Multiple books can share a level.
+   - For a new level, add one levels entry with id, label, order, status, bookIds, and cover. No page or route source change is needed.
+   - Add one sourceSets entry with bookId, levelId, sourceFile, and audioPathTemplate. The template must include {number} (for example, resources/audio/new-book/Unit {number}.mp3).
+
+2. **Add structured content** under resources/structured/<book-id>/. Use the supplied unit JSON fields: level, positive unit_number, unit_title, topic, non-empty passage paragraphs, vocabulary entries (word, part_of_speech, meaning_in_context, example), speaking_prompts, and grammar_focus (title, explanation, examples, practice_task). Reviews are assembled from units according to the book's reviewFrequency; no book-specific review page is needed.
+
+3. **Add audio** at the paths produced by the source set's audioPathTemplate. The template is resolved for each unit number and the validator checks every mapped file. Optional paragraph_audio is an array of one existing audio path per passage paragraph. Optional inline audio_timing follows the versioned timing map validated by src/domain/audio-timing.js; these fields are retained in normalized unit data.
+
+4. **Add the cover** under resources/covers/<book-id>/ and point both the book's cover.path and, when appropriate, its level's cover.path at the file. Use mediaType: 'image/jpeg' for JPEG/JFIF files or the correct media type for the asset.
+
+5. **Normalize and validate.** Normalization runs through the shared parser and normalizeUnit when the app loads content; no generated per-book source code is required. Run:
+   ```sh
+   npm run validate:content
+   npm test
+   ```
+   The validator follows the central registry and checks catalog relationships, unique IDs/slugs, required unit fields, unit numbers, cover/source/audio references, optional paragraph audio, and optional timing metadata.
+
+6. **Run and build.** Use npm start and open http://localhost:4173 to review the catalog and book/unit routes. Run npm run build, then npm run verify:production before deployment. The build copies the registered resources and application into dist/; deploy that production output using the project's deployment environment.
+
+Keep book and unit IDs stable after learners have saved progress: browser-local progress is keyed by those IDs. For parallel content work, give each contributor a unique book ID and separate structured/audio/cover directories; one integration owner should merge the shared catalog registration. Content contributors should not edit React/page components for an ordinary book addition.
+
+**Current boundary:** unit and review items are implemented. Novel-length content is a future content-item type and is not registered or rendered as a product feature yet; it should use a shared content-item abstraction and route/rendering extension rather than a novel-specific book page. No novel content is included.

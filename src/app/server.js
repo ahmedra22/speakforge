@@ -26,6 +26,7 @@ const publicModules = new Map([
   ["/grammar-section.js", source("features", "grammar", "grammar-section.js")],
   ["/review-experience.js", source("features", "reviews", "review-experience.js")],
   ["/progression.js", source("domain", "progression.js")],
+  ["/domain/audio-timing.js", source("domain", "audio-timing.js")],
   ["/ai-practice-panel.js", source("features", "ai-practice", "ai-practice-panel.js")],
 ]);
 

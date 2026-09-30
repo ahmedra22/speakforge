@@ -1,202 +1,45 @@
-# SpeakForge Architecture (Audit Phase)
+# SpeakForge Architecture
 
-**Status:** proposed architecture, based on the repository snapshot audited 2026-09-30. This phase documents; it does not build the application.
+**Status:** implemented JavaScript ESM application; final product polish and QA are tracked in `docs/agent-handoff.md`.
 
-## Product and scope
+## Product structure and routes
 
-SpeakForge is a data-driven English reading/listening/speaking practice product. Its canonical hierarchy is **Level → Book → Content Item**. A content item has a discriminated type such as `unit` or `review`; future types can be added without level-specific screens. The current repository has structured units for A2, B1, and B1+ only. The B1+ data contains units 1–12; do not infer or fabricate 13–24. PDFs and covers also include some future levels, but those assets are not evidence that structured learning content exists.
+The app uses a server-rendered, data-driven hierarchy: **Level → Book → Unit or Review**. Shared route rendering is in `src/app/render.js` and `src/features/catalog/pages.js`; the HTTP server and JSON/content APIs are in `src/app/server.js`.
 
-## Repository facts and gaps
+- `/` — available and planned catalog
+- `/learn/:level-or-book` — level or book overview and unit sequence
+- `/learn/:book/unit-:number` — normalized unit page
+- `/learn/:book/review-:start-:end` — review assembled from source units
+- `/about` — project information
 
-- The project root currently contains `README.md` and `resources/`; there is no app, package manifest, test setup, or existing `docs/` directory.
-- All six specification files exist, but each is a 53-byte placeholder (“Replace with the corresponding specification file.”). They cannot be treated as substantive requirements until restored or authored.
-- The two files under `resources/reference/` contain only URLs. Both reference pages were inspected and verified on 2026-09-30: <https://readtospeakbooks.com/learn/b1-core> (B1 Core, units 01–12) and <https://readtospeakbooks.com/learn/b2-continuation> (B2 Continuation, units 13–24).
-- Preserve `resources/` as source material. Do not rewrite PDFs, JSON, audio, covers, or reference files as part of application normalization.
+The manifests map A2 Foundation (10 units), B1 Core (12), and B1+ Bridge (12). B2, B2+, and C1 are planned catalog states, not available courses. The app does not infer units from PDFs/covers and does not create B1+ units 13–24.
 
-## Resource audit
+## Content pipeline and asset handling
 
-### Structured content
+Raw files under `resources/` remain unchanged and are the source of truth. `src/content/normalize/` parses and normalizes the supplied source format; `src/content/repository/content-loader.js` exposes levels, books, unit summaries, and full units; `src/content/manifests/catalog.js` maps course and asset availability. `npm run validate:content` checks normalized content and mapped audio/covers. Repeated vocabulary is informational and currently yields 45 warnings.
 
-All three datasets describe standalone learning units with these top-level keys: `level`, `unit_number`, `unit_title`, `topic`, `passage`, `vocabulary`, `speaking_prompts`, and `grammar_focus`. A passage is an array of paragraph strings: A2 units all have 4; B1 units range 3–5; B1+ units have 4 except units 10 and 11, which have 5. Vocabulary entries contain `word`, `part_of_speech`, `meaning_in_context`, and `example`. `grammar_focus` contains `title`, `explanation`, `examples`, and `practice_task`. The inspected data has 15 vocabulary entries and four speaking prompts per unit; the reference product uses 20 words at B2, so word count must remain data-driven, not fixed.
+Unit lists use summaries. A selected unit loads its normalized detail. Passage text is not included in initial unit HTML: after three legitimate completed listens, the client requests `/api/units/:id/passage`. Timing is optional and absent for current material; no timestamps are fabricated.
 
-| Source | Unit count | Level label in data | Format observation |
-| --- | ---: | --- | --- |
-| `resources/structured/a2/units.a2.json` | 10 | A2 Foundation | Consecutive standalone JSON objects, not one valid JSON array/document. |
-| `resources/structured/b1/units.b1.json` | 12 | B1 Core | Must be parsed and validated as delivered; observed multiple top-level units. |
-| `resources/structured/b1-plus/units.b1-plus.json` | 12 | B1+ Bridge | 12 units; do not create imagined continuation units. |
+## Learning features and progress
 
-No source dataset includes stable IDs, book IDs, review records, audio URLs, passage timing, or per-paragraph audio references. Unit number is only unique within a book; normalized IDs must be generated deterministically from book ID and source number, not written back into source files.
+The reusable UnitPage composes the AudioPlayer, passage reader, vocabulary/TTS, Word Tracking, speaking prompts and optional local recording, grammar, bilingual Method, AI Practice, and completion state. Review material is assembled from its actual source units.
 
-### Audio
+`src/domain/progression.js` derives sequence locks, completion, reviews, and book/level aggregates. The existing versioned `ListeningProgressStore` persists listening, passage unlock, vocabulary uses (maximum five), speaking and grammar completion, review and unit completion, AI Practice completion, and last-visited resume state in browser-local storage. Audio preferences use a separate scoped store. Progress and recordings do not sync to an account or another device.
 
-There are 10 A2 files (`A2 Unit 1.mp3` through `A2 Unit 10.mp3`), 12 B1 files (`B1 Unit 1.mp3` through `B1 Unit 12.mp3`), and 12 B1+ files (`B1+ Unit 1.mp3` through `B1+ Unit 12.mp3`). These appear to be unit-level recordings, matching the book/unit naming pattern. No paragraph-level clips or timing/word-alignment metadata were found. An inspected B1 Unit 1 file is mono MP3 at 44.1 kHz and approximately 61.75 seconds. Validate every file with media tooling during implementation; do not make passage timestamps or audio-per-paragraph features part of the initial content model.
+A unit completes only when its configured activity requirements are met and the unit is available in sequence. AI Practice is an optional completion requirement; current books leave it optional. A review unlocks when all its source units are complete and gates the following item until completion.
 
-### Books and covers
+## AI Practice boundary
 
-PDFs: A2 (38 pages), B1 (44), B1+ (44), and B2 (44), all Letter page size. Covers are JPEG-family JFIF files: `a2.jfif`, `b1.jfif`, nested `b1-plus/b1+.jfif`, `b2/B2.jfif`, `b2-plus/B2+.jfif`, and `c1/C1.jfif`. Thus covers are present for A2, B1, B1+, B2, B2+, and C1. All six inspected cover images are 1792×2400 MJPEG/JFIF. Keep paths explicit in a manifest; do not infer path from slug or force renames.
+The browser starts a practice session with a unit ID and sends learner messages with a session ID. The server resolves the unit through the content loader and builds the unit context; client-provided course text is not trusted. `src/domain/ai-practice/` owns context and session rules. `src/infrastructure/ai/provider.js` defines the provider adapter; the current adapter targets OpenAI-compatible Chat Completions. Configuration and API credentials are server-only. Structured word suggestions require learner confirmation before they update existing Word Tracking.
 
-## Proposed technology and folder boundaries
+The adapter uses `AI_PROVIDER`, `AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL`, and `AI_TIMEOUT_MS`, documented in `.env.example`. Missing configuration leaves course features available and clearly reports that AI is not configured. Sessions are held in server memory with a three-hour expiry and are lost on server restart.
 
-The repository currently has no technology choices to preserve. Recommended first implementation: **TypeScript + React + Vite**, with a small router (React Router or equivalent), schema validation using Zod, and Vitest for unit/integration checks. Start as a client-side application with a repository interface for persistence. This avoids introducing a server, account system, or AI integration before product requirements are restored. Keep provider keys out of browser code; AI calls later belong behind a server API.
+## UI, accessibility, and production
 
-Suggested structure:
+Shared HTML components live in `src/components/`; browser controllers live under `src/features/` and are mounted by `public/app.js`. `public/styles.css` contains responsive layouts, focus styling, reduced-motion handling, the dialog treatment, and unit print rules. The bilingual Method switches between English and Arabic, with Arabic marked RTL. Printing is limited to the selected unit content; locked passage text is absent until the listen gate unlocks it.
 
-```text
-src/
-  app/                 # router, app shell, route composition
-  domain/              # content/progress types and learning rules; UI independent
-  content/
-    source/             # read-only import boundary for resources (or build input)
-    normalize/          # source adapters into canonical model
-    manifests/          # level/book/audio/cover mappings
-    validate/           # schemas and cross-resource checks
-    repository/         # content lookup API
-  features/
-    catalog/            # level and book browsing
-    learning/           # unit/review composition
-    audio/              # player and listen events
-    vocabulary/         # word tracking
-    speaking/           # prompts and completion
-    progress/            # progress views and persistence adapter
-    ai-practice/         # later provider-neutral interface and UI
-  components/            # shared presentational components
-  infrastructure/
-    persistence/        # local adapter now; cloud adapter later
-    ai/                  # server-side provider implementations later
-  styles/
-resources/               # immutable supplied source assets
-docs/
-  architecture.md
-  agent-handoff.md
-```
+The app uses Node.js built-ins and has no third-party runtime dependencies. `npm run build` copies the server, source, public assets, and resources to `dist/`; running `npm start` from that directory serves the production copy at `http://localhost:4173` by default. `npm run verify:production` exercises production routes and assets.
 
-The exact framework is a recommendation, not a discovered project decision. Revisit if a deployment target or existing conventions are introduced.
+## Verification and limits
 
-## Canonical content model
-
-Use explicit IDs and discriminated item types. Keep source-specific names inside adapters.
-
-```ts
-type Level = { id: string; label: string; order: number; bookIds: string[] };
-type Book = { id: string; levelId: string; title: string; cover?: AssetRef; sourcePdf?: AssetRef; itemIds: string[] };
-type ContentItem = Unit | Review;
-type Unit = {
-  kind: "unit"; id: string; bookId: string; sequence: number;
-  title: string; topic: string; passage: { paragraphs: string[] };
-  vocabulary: VocabularyItem[]; speakingPrompts: string[]; grammar: GrammarFocus;
-  audio?: AudioAssetRef;
-};
-type Review = {
-  kind: "review"; id: string; bookId: string; sequence: number;
-  title: string; includedItemIds: string[]; // add authored review activities only when source requirements exist
-};
-```
-
-Treat the supplied JSON as source, normalize snake_case to this application model, and validate during the build/CI. Keep data loading behind `ContentRepository` operations such as `listLevels`, `getBook`, and `getContentItem`. Asset maps should explicitly associate a book/unit ID with a relative asset path and metadata. Missing assets are valid optional values unless a product rule later makes them required. Validation should report malformed JSON, duplicate IDs/sequences, invalid references, missing expected unit audio, invalid schema, and orphaned assets. Do not “repair” source files silently; normalize through adapters and document any data correction separately.
-
-## Routes and UI composition
-
-Use parameterized routes, not per-level or per-unit implementations:
-
-```text
-/levels
-/levels/:levelId
-/books/:bookId
-/books/:bookId/items/:itemId
-/books/:bookId/reviews/:itemId
-```
-
-The item route resolves a typed content item and renders the appropriate feature. Unknown types and missing IDs get explicit not-found states. Catalog, book overview, unit reader, and review can share shell/navigation and cards. Unit composition should be assembled from reusable passage, audio, vocabulary, grammar, and speaking features. Responsive behavior should preserve access to audio controls, reading, and progress on narrow screens; measure the reference behavior later with manual browser review.
-
-## Learning and progress boundaries
-
-Keep pure learning rules in `domain/`, with UI emitting events and rendering derived state:
-
-- Sequential unlock: configurable policy over ordered items. Store completion by item ID; review gates must be explicit policy/data, not inferred solely from every third number.
-- Listening: record completed listens, not play-button presses. A listen qualifies only when the playback reaches its completion threshold; the threshold and reset behavior need a product decision. The B1 reference describes unlock after three complete listens and recommends 3–5 total.
-- Passage visibility: derive from listen state and policy; do not mutate content.
-- Vocabulary tracking: per-user/per-book/unit/word counts or mastered state; reference method describes five successful spoken uses per target word.
-- Speaking and grammar progress: separate completion events, because current source only supplies prompts/practice task and has no scoring contract.
-- AI completion: later activity event with provider/model metadata and a safe summary, not raw secret-bearing request state.
-
-Define a `ProgressRepository` interface (read/write progress by learner and content IDs). Start with a versioned local-storage adapter and migration functions. Components depend on the interface or a domain service, never directly on `localStorage`. A later authenticated adapter can target Supabase/PostgreSQL without UI rewrites. No account identity or cross-device merge policy is established yet.
-
-## AI Practice boundary (design only)
-
-Construct a validated `UnitContext` from normalized content: level, book, unit, topic, passage, vocabulary, grammar, and speaking prompts. Expose a provider-neutral server contract (for example `PracticeProvider.generateTurn(context, learnerInput, history)`) and normalize provider responses into app-owned types. OpenAI, Gemini, Claude, or another provider is an implementation choice behind that interface. API keys and provider calls stay server-side. Add consent, retention, safety, cost/limits, and failure behavior requirements before shipping. This phase does not implement AI practice.
-
-## Reference UX observations
-
-The accessible B1 page presents level selection, a book/core-continuation choice, a numbered unit track with periodic review cards, then a selected unit with listening instructions, playback speed/repeat controls, a passage gated by three completed listens, vocabulary with word tracking, four speaking prompts, grammar, and a method explanation. Its method order is Listen → Shadow → Read → active vocabulary → Speak, with review after every three units. These are observations from the reference and must be translated into original SpeakForge branding, UI, and code; do not copy their assets or implementation. The B2 URL could not be inspected in this audit.
-
-## Implementation sequence
-
-1. Restore/author the actual product specs and decide unresolved learning rules.
-2. Establish TypeScript app shell, route skeleton, domain IDs/types, and content repository contract.
-3. Build source adapters, asset manifests, schema/cross-file validation, and report source-format anomalies. Keep raw resources untouched.
-4. Implement progress interface/local adapter and pure unlock/listen/vocabulary rules.
-5. Build responsive catalog, book, unit, and review UI against normalized fixtures/data.
-6. Add audio integration and verify playback/completion behavior against actual files.
-7. Add QA/accessibility/performance checks and merge gate.
-8. Design and implement server-side AI practice only after requirements, safety, and deployment are decided.
-9. Add cloud persistence/authentication when product requirements justify it.
-
-## Risks and unresolved decisions
-
-- The supplied specification files are placeholders, so key requirements in the brief are not present in the repository.
-- A2 JSON is not one valid JSON document; confirm exact parser behavior and repair strategy before app ingestion. Audit exact syntax of B1 and B1+ in the content-engine phase too.
-- No stable source IDs or explicit reviews exist in structured data. Do not invent review content; represent review items only when requirements/content are supplied.
-- Asset path conventions are inconsistent (flat and nested covers); map explicitly.
-- Audio timing/segmentation metadata is absent; only unit playback is justified.
-- B2 has PDF/cover assets but no structured JSON/audio directory in the audited tree. B2+ and C1 have covers only. Do not present these as available courses.
-- The reference B2 page was not verifiable, and reference files are URL stubs.
-- Persistence identity, listen qualification, completion semantics, reset behavior, accessibility targets, hosting, and AI data policy remain product decisions.
-
-## Phase 2 implementation note
-
-The content engine is implemented in JavaScript ESM using Node.js built-ins, with no runtime dependencies. Source JSON is parsed and normalized at load time; manifests map only observed assets. `npm run validate:content` validates source and mappings, and `npm test` exercises the normalizer. Route descriptors are present, but no frontend framework or UI was added in this phase. Git was initialized; see `docs/agent-handoff.md` for status and ownership boundaries.
-
-## Phase 4 audio boundary
-
-The reusable player is split between `src/components/audio-player.js` (markup), `src/features/audio/audio-player.js` (native media state and controls), and `src/features/audio/audio-preferences.js` (scoped, injectable playback-speed persistence). Unit detail loads its normalized audio reference and passes it to the component. The HTTP server serves one requested MP3 with byte-range support. Audio state covers loading, ready, playing, paused, ended, and error; it does not count legitimate listens or couple to progress. Future listen completion and Follow Along must consume a separate event boundary without making the player unit-specific.
-
-## Phase 5 listening, unlock, and timing boundary
-
-The existing AudioPlayer remains independent from completion policy and exposes generic playback events through `onPlaybackEvent`. A domain tracker grants one completion only after natural end, start near zero, and at least 99.5% continuous naturally observed coverage. Seeking forward leaves a coverage gap; replayed audio can fill a legitimate gap. Repeat mode emits a separate ended event for each loop.
-
-A versioned `ListeningProgressStore` accepts an injectable storage adapter and keys records by canonical unit ID. It persists listen count and monotonic passage unlock. The browser implementation uses localStorage behind this interface. Passage text is omitted from initial HTML and requested from the normalized content endpoint only after unlock. The endpoint is a product-flow gate, not a security boundary.
-
-`AudioTiming` version 1 supports nested paragraph, sentence, phrase, and word segments with IDs, text, times, and paragraph membership. The validator checks ordering and bounds. The reader consumes supplied timing against the native unit audio; absent timing uses ordinary reading plus unit playback, without guessed timestamp interpolation. Local Whisper experimentation on A2 Unit 1 produced a matching transcript and word estimates, but no estimates were independently reviewed, so no sidecar is shipped and no unit advertises synchronization.
-## Phase 6 vocabulary and browser TTS boundary
-
-Vocabulary presentation consumes the normalized `Unit.vocabulary` array. `renderVocabularySection` is a data-only renderer; `VocabularyCard` exposes the normalized vocabulary item ID and accepts an optional progress provider through its mount boundary. The current filters show all content or an explanatory no-progress empty state; speech activity does not create mastery data.
-
-One page-level `SpeechService` owns all browser speech. It speaks exact English source fields as separate requests, selects an available English voice when possible (otherwise uses the browser default with `en-US` language), sets TTS rate independently from recorded audio, and cancels previous speech before each new request. `playAll` serially awaits each utterance’s `end` event. Speech state events are subscribed to by the vocabulary UI; unsupported browsers leave cards readable and expose a concise status. Browser TTS never substitutes for the real unit MP3.
-## Phase 7 Word Tracking and Speaking boundary
-
-Phase 7 extends the existing `ListeningProgressStore` key and per-unit record with `vocabulary[wordId] = { uses, targetUses, learned }` and `speaking[promptId] = { completed }`. It preserves legacy listen fields, caps word uses at five, and derives mastery at five. A change subscription lets the VocabularySection update its filter and unit summary without page reload. The learner’s explicit Add use action is the only current source of marks; speech playback, recordings, and prompt completion remain independent.
-
-Speaking prompts come from normalized `Unit.speakingPrompts` with stable prompt IDs. `SpeakingSection` accepts source prompts and progress store; optional `targetVocabulary` is shown only if supplied by normalized content. Prompt completion is explicit and stored per prompt. A separate recording-session controller requests microphone permission only on user action, wraps MediaRecorder, creates a local Blob URL for playback, and revokes it on deletion/destroy. Recordings remain in page memory, have no cloud persistence or upload, and recording failures do not block completion.
-
-Future AI integration can ask the learner to confirm a proposed target vocabulary use by calling `recordVocabularyUse(unitId, vocabularyItemId)`; no automatic detection or marking is implemented. Grammar, reviews, and account/cloud work remain separate features.
-## Phase 8 implementation — grammar, reviews, and progress
-
-The implemented learning sequence inserts a configurable review after every three units by default. Review content is derived from the preceding source units: vocabulary, grammar, one passage paragraph per unit, and speaking prompts. Review pages start locked and become available only after all source units are marked complete. Review completion gates the next sequence item.
-
-Unit completion is derived from explicit activity state: the passage must be unlocked after three qualifying listens; every vocabulary entry must reach five learner-confirmed uses; all speaking prompts must be marked complete; and grammar practice must be marked complete when the unit has a practice task. The completion action rechecks both these conditions and sequential availability before writing completion.
-
-Grammar, reviews, unit completion, and last-visited resume data extend the existing versioned local listening-progress store. Book progress is derived from completed units; level progress aggregates books. Audio preferences continue to use their existing separate preference store. This is local browser persistence only; it does not establish learner accounts, cloud sync, or cross-device merging.
-
-The Phase 8 verification report and exact browser/runtime limitation are recorded in `docs/agent-handoff.md`.
-
-## Phase 9 implementation — AI Practice boundary
-
-The UnitPage includes a Practice with AI action that opens an accessible responsive dialog for the selected unit. The browser sends only a normalized unit ID to start a session and then a session ID plus learner messages. The server resolves the actual Level, Book, and Unit through `contentLoader` and constructs `UnitContext`; the browser cannot substitute authoritative passage, vocabulary, grammar, or prompt data.
-
-`UnitContext` carries the selected level/book/unit identity, full passage, vocabulary IDs/words/parts of speech/meanings/examples, all speaking prompts, and grammar title/explanation/examples/practice task. `createAiPracticeSessionService` owns server-memory messages and ordered prompt progress. Its provider dependency uses a narrow `generateResponse({ instruction, messages, signal })` interface. The current implementation is an OpenAI-compatible adapter configured only with server environment values. The unit instruction grounds course facts in the context, keeps conversation concise, advances through one speaking prompt at a time, and supports grammar feedback, vocabulary quizzes, and structured read-aloud requests.
-
-Vocabulary usage responses are validated against current-unit vocabulary IDs, model confidence, and learner text, and exact copied assistant prompts are filtered. The browser asks the learner before calling the existing `recordVocabularyUse`; the existing five-use limit remains authoritative. Grammar corrections are structured feedback tied to the selected unit grammar. Read-aloud requests and AI response speech reuse the existing `SpeechService`; optional voice input uses browser speech recognition and requires transcript review before send.
-
-AI completion is an explicit session action persisted through the existing `ListeningProgressStore.aiPractice` record. The existing unit completion engine accepts `requireAiPractice`; current books configure it as optional. No separate progress system was created. Session state is process-memory with a three-hour expiry; the browser keeps its session ID in `sessionStorage`. Authentication, durable user storage, and cross-device sync remain out of scope.
-
-See `docs/agent-handoff.md` for environment setup, test/build/smoke results, provider/browser verification limits, and the Phase 9 implementation commit.
+Run `npm test`, `npm run validate:content`, `npm run build`, and `npm run verify:production`. The final polish handoff records exact results. Browser visual QA and Lighthouse results must only be reported when those tools run successfully. No live AI provider response is claimed unless real server configuration is available and used.

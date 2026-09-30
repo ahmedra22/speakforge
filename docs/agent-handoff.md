@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-09-30  
 **Project owner/creator:** Ahmed Ramadan  
-**Current phase:** Phase 5 listening unlock and passage reading foundation implemented on `feature/listening-unlock`. Vocabulary, speaking, grammar, reviews, and AI remain out of scope.
+**Current phase:** Phase 6 vocabulary and browser text-to-speech implemented on `feature/vocabulary-tts`. Word Tracking, speaking, grammar, reviews, and AI remain out of scope.
 
 ## Project overview
 
@@ -12,7 +12,7 @@ SpeakForge is intended to be a scalable, data-driven English-learning platform o
 
 - Git initialized on `master`; initial commit `866ea68` records the source resources and foundation. `.gitignore`, npm scripts, Node.js ESM source, tests, and route descriptors are present.
 - Architecture recommendation and audit findings are in [architecture.md](architecture.md).
-- Responsive navigation/catalog UI and reusable unit pages are implemented. Unit pages now include the real unit-level AudioPlayer. Listen completion, local progress persistence, gated passage reading, and a timing-ready reader are implemented.
+- Responsive navigation/catalog UI and reusable unit pages are implemented. Unit pages now include the real unit-level AudioPlayer. Listen completion, local progress persistence, gated passage reading, timing-ready reader, data-driven vocabulary cards and browser speech are implemented.
 - Supplied specs are placeholders (53 bytes each); they need real product requirements before implementation can confidently enforce them.
 - A2 structured JSON is concatenated unit objects; the shared parser now accepts concatenated objects, single objects, and array-wrapped data without source edits.
 
@@ -209,3 +209,12 @@ This phase audited the available resources, inspected the B1 reference UX, recor
 - Local timing investigation: Whisper `small` on A2 Unit 1 returned a transcript matching the source text and word timestamps. Word time estimates were not independently reviewed for alignment precision, so no timing map was promoted into course content; Follow Along remains unavailable for all current units. Do not treat the experiment as proof of precise alignment.
 - `npm test` (21 tests), `npm run validate:content` (34 units; 45 existing repeated-vocabulary warnings), `npm run build`, and `npm run verify:production` passed. Browser automation could not be completed in this environment; no visual/manual browser check is claimed.
 - Feature boundaries: audio emits playback events; listening qualifies and persists completion; the catalog page hosts progress/lock composition; the reader handles passage display and optional synchronization. Later vocabulary, Word Tracking, speaking, and grammar features can consume unit content independently.
+## Phase 6 vocabulary and browser speech
+
+- Branch: `feature/vocabulary-tts`. The normalized Unit’s `vocabulary` list is rendered in `src/components/vocabulary/vocabulary-section.js`, composed into `src/features/catalog/pages.js`. Counts are derived from data; source word, part of speech, meaning, and example are escaped and displayed without rewriting. Same component handles A2, B1, and B1+.
+- `VocabularyCard` is a semantic `<article>` keyed by normalized item ID, renders all source fields and independent Word/Meaning/Example/Play All controls. `mountVocabularySection(root,{speechService,progress})` accepts an optional future progress provider; without it, only All shows records and other filters give a neutral Word Tracking-unavailable empty state. No mastery/progress records are invented.
+- `src/features/speech/speech-service.js` provides a shared coordinator (`speak`, `playAll`, `cancel`, `setRate`, `setVoice`, `getEnglishVoices`, `subscribe`). It uses browser speech synthesis, forces `en-US`, prefers available English voices, falls back to browser voice selection, constrains TTS rates to 0.8×/1×/1.2×, and cancels any active utterance before a new request. Play All awaits end of each utterance before starting the next.
+- Speech state is broadcast globally (`speaking-word`, `speaking-meaning`, `speaking-example`, `playing-all`, `cancelled`, `error`, `idle`) and reflected on the active card; speech service is separate from recorded course audio and its speed preferences. Unsupported speech disables speech buttons and leaves source vocabulary readable.
+- Browser automation was attempted but the computer-use runtime exited unexpectedly before surface initialization. No visual, audible, or device-level browser verification is claimed.
+- Checks: `npm test` (28 tests), `npm run validate:content` (34 units, 45 existing repeated-vocabulary warnings), `npm run build`, and `npm run verify:production` all passed. Production smoke checks confirm A2/B1/B1+ unit pages render normalized vocabulary and TTS modules are served.
+- Next phase: Word Tracking + Speaking Prompts + Optional Recording. Word Tracking should supply a real `progress.get(vocabularyItemId)` status interface; do not infer mastery from speech playback.

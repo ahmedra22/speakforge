@@ -197,4 +197,5 @@ This phase audited the available resources, inspected the B1 reference UX, recor
 - The audio controller is tested with a deterministic mock audio element and the HTTP layer is tested with real MP3 files. Playback itself still depends on the learner’s browser and device.
 - No completed-listen counting, passage unlocking, Follow Along, or progress recording was introduced.
 - Next phase: **3-Listen Completion + Passage Unlock + Follow Along Architecture**. Keep learning completion events outside the reusable AudioPlayer and build them as a separate domain feature.
-- Phase 4 implementation commit: to be recorded after commit creation.
+- Phase 4 implementation commit: `dd3bbb8` (`Add reusable unit audio player`).
+

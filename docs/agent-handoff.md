@@ -1,8 +1,8 @@
 # SpeakForge Agent Handoff
 
-**Last updated:** 2026-09-30  
+**Last updated:** 2026-10-01
 **Project owner/creator:** Ahmed Ramadan  
-**Current phase:** Phase 10 final polish and browser annotation updates are committed on `feature/final-polish` (`ae2b4b8`). Automated checks pass; browser, Lighthouse, and live-provider limitations are recorded below.
+**Current phase:** Responsive Device Support is complete on `codex/responsive-device-support`; see the final handoff section for viewport results and browser/platform limits.
 
 ## Project overview
 
@@ -443,3 +443,31 @@ The existing `public/app.js` controllers continue to connect `AudioPlayer`, the 
 - Documentation commit: records the implementation commit hash and these QA results.
 - Progress remains browser-local; AI sessions remain in server memory. Follow Along remains unavailable for units without source timing. These are existing product limits, not blockers in this repair.
 - No new phase or feature work was started.
+## Responsive Device Support — complete (2026-10-01)
+
+### Findings and changes
+
+- The same server-rendered routes, components, content, and browser controllers are used at all sizes; no device-specific site or codebase was created.
+- The initial viewport scan found three layout defects: two-column audio options overflowed the viewport at 390px; long unit titles were ellipsized on small phones; and the resume title/button could overlap at narrow widths. An empty passage host also left a blank card before the passage unlocked.
+- `public/styles.css` now stacks audio options through 430px, lets unit titles wrap below 650px, and switches the resume card to one column through 430px. The empty passage host stays hidden until the existing reader inserts unlocked content. The decorative home orbit is hidden on narrow phones to avoid clipping its labels.
+- Touch sizing was improved for the mobile menu, level pills, book/level actions, breadcrumb and unit navigation links, and audio sliders. Existing audio, vocabulary, Word Tracking, speaking, grammar, review, progress, and AI controls remain present.
+- AI Practice uses the full viewport on phones. At 768px and desktop it remains the existing right-side panel (620px in the checked widths), with the same conversation behavior and responsive page behind it.
+- Added `tests/responsive-support.test.js` to protect the key breakpoint, title wrapping, resume card, empty passage, navigation, touch-target, and AI panel rules.
+
+### Verification
+
+- `npm test`: **64 passed, 0 failed**.
+- `npm run validate:content`: **passed**, 34 units across three books; 45 repeated-vocabulary warnings remain informational.
+- `npm run build`: **passed**.
+- `npm run verify:production`: **passed**.
+- Production viewport checks used headless Edge emulation at **320, 375, 390, 414, 768, 820, 1024, 1366, 1440, and 1920px**, across five pages: Home, B1 level, B1 book, A2 Unit 1, and the A2 Units 1–3 review. All **50 page/viewport checks** ended with no horizontal overflow, out-of-viewport UI, clipped unit title, or resume-card overlap.
+- Visually inspected production screenshots at 375px phone, 768px tablet, and 1366px desktop. Checked the mobile home/level/unit/vocabulary/AI layouts and tablet book page. The mobile navigation opened and its Levels link navigated correctly. The AI panel measured 375×844px on the phone; audio seek was 44px high, and Word Tracking/TTS buttons were 46px high. Tablet and desktop AI side panels fit within the viewport.
+- The production preview is running from the rebuilt `dist/` at `http://localhost:4173`.
+
+### Platform limits and Git
+
+- Browser checks used Windows Edge with emulated viewport sizes. They are not tests on physical Android/iOS devices, Safari, or Firefox. The in-app computer-use runtime still fails during setup, so screenshots were inspected from the separate headless Edge production session.
+- Microphone recording, audible TTS on physical speakers, device-specific keyboard/screen-reader behavior, and native safe-area behavior on iOS hardware were not tested here. Existing automated feature tests verify recording/TTS controller behavior and graceful unsupported-API fallbacks.
+- Branch: `codex/responsive-device-support`.
+- Implementation commit: `c1d1e1c` — `Improve responsive device layouts`.
+- No new product phase or feature set was started.

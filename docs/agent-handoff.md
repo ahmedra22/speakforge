@@ -405,3 +405,41 @@ This phase audited the available resources, inspected the B1 reference UX, recor
 - Added regression assertions for all three level-scoped colors, renamed available/planned book cards, and future-level availability.
 - Final follow-up verification: `npm test` **61 passed, 0 failed**; `npm run validate:content` passed for 34 units with 45 informational warnings; `npm run build` passed; `npm run verify:production` passed; `git diff --check` passed.
 - Browser runtime was retried after reset but exited before connecting to the open local page (`trusted Node process exited unexpectedly; kernel reset`). The code was verified through route rendering, CSS-scope regression tests, and the production smoke check; no visual browser result is claimed.
+## Integration repair — complete end-to-end UnitPage (2026-09-30)
+
+### Status and root causes
+
+- Integration repair is complete on `feature/integration-repair`. The shared UnitPage now composes the existing course features in learning order; no parallel feature systems or course content were added.
+- The browser application’s static import graph contained a missing runtime route. `public/app.js` imports `passage-reader.js`, which imports `../../domain/audio-timing.js`; from its browser URL that resolves to `/domain/audio-timing.js`. The production server did not map that URL. The browser rejected the module graph, so the app bootstrap stopped before mounting any client controllers. That made the audio player stay at “Loading audio…” and left progress, passage unlock, vocabulary, speaking, grammar, and AI controllers uninitialized.
+- Audio paths also need each asset filename encoded as a URL segment: spaces and the plus sign in the B1+ filename must reach the mapped MP3 correctly.
+
+### Files changed and integration
+
+- `src/app/server.js`: map `/domain/audio-timing.js` to the existing timing domain module.
+- `src/components/audio-player.js`: URL-encode each audio path segment while preserving directory separators.
+- `src/features/catalog/pages.js`: make the existing UnitPage composition explicit and ordered as header/player, listen progress and passage lock, vocabulary/Word Tracking, speaking, grammar, Method, AI Practice, completion, and navigation. All feature data comes from the normalized unit.
+- `tests/unit-page-integration.test.js`: verify complete normalized A2, B1, and B1+ content, audio URLs, locked passage absence, rendered vocabulary/Word Tracking/prompts/grammar/AI context, composition order, and client controller mounts.
+- `scripts/verify-production.js`: expand production integration coverage across A2/B1/B1+ unit pages and MP3 GET/HEAD/range responses; recursively check every static browser module imported by `/app.js`, including the audio-timing dependency; retain review/progress and graceful unconfigured AI checks.
+- `README.md`, `docs/architecture.md`, and this handoff: update runtime and verification documentation.
+
+The existing `public/app.js` controllers continue to connect `AudioPlayer`, the three-listen tracker, progress storage, passage reader, vocabulary/TTS and Word Tracking, speaking/recording, grammar, reviews/progression, and AI Practice. No duplicate controller or storage system was introduced.
+
+### Verification results
+
+- `npm test`: **63 passed, 0 failed**.
+- `npm run validate:content`: **passed**, 34 units across three books; 45 repeated-vocabulary warnings remain informational.
+- `npm run build`: **passed**.
+- `npm run verify:production`: **passed**. It checks the full browser import graph, page composition, normalized content, review/progress endpoints, graceful unconfigured AI, and real A2/B1/B1+ MP3 GET, HEAD, and byte-range delivery.
+- Production HTTP checks: homepage and A2/B1/B1+ Unit 1 pages returned 200; the three MP3s returned `audio/mpeg`, content lengths, and byte ranges; `/domain/audio-timing.js` returned 200 without exposing a filesystem path.
+- Headless Edge production-browser check: A2, B1, and B1+ Unit 1 loaded their real audio metadata and displayed durations of **0:40**, **1:02**, and **1:19**. All eight learning sections were visible with nonzero layout height; A2 showed 15 real vocabulary cards, four real speaking prompts, normalized grammar, the locked passage, and no passage text in the DOM before unlock. Play/pause, speed, repeat, and mute responded. AI Practice opened with the selected A2 unit context and the expected unconfigured-provider notice. No failed requests or console errors remained on the clean reload.
+- Three complete A2 listens at the supported 1.5× playback rate were then played through the page controls in an isolated temporary browser profile. The tracker showed three listens, removed the lock, fetched the source passage, and rendered its six paragraphs. This verifies the end-to-end listen-to-passage integration.
+- The in-app computer-use runtime itself still exits during initialization. Direct headless Edge/CDP was available and used for the browser checks above. Microphone permissions/recording, audible browser TTS/Play All, mobile/tablet layout, screen-reader walkthrough, print preview, and a configured live AI provider were not verified in this session; existing automated feature tests cover the supported controller behavior where applicable.
+- The initial pre-fix local preview process could serve stale built output; the production output was rebuilt and the verified server was started from the fresh `dist/` directory. Restart the server after rebuilding so it serves the new module map.
+
+### Git and remaining limitations
+
+- Branch: `feature/integration-repair`.
+- Implementation commit: `4dfba60` — `Integrate learning features and fix runtime assets`.
+- Documentation commit: records the implementation commit hash and these QA results.
+- Progress remains browser-local; AI sessions remain in server memory. Follow Along remains unavailable for units without source timing. These are existing product limits, not blockers in this repair.
+- No new phase or feature work was started.

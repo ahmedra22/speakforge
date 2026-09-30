@@ -38,7 +38,7 @@ The adapter uses `AI_PROVIDER`, `AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL`, and `AI
 
 Shared HTML components live in `src/components/`; browser controllers live under `src/features/` and are mounted by `public/app.js`. `public/styles.css` contains responsive layouts, focus styling, reduced-motion handling, the dialog treatment, and unit print rules. The bilingual Method switches between English and Arabic, with Arabic marked RTL. Printing is limited to the selected unit content; locked passage text is absent until the listen gate unlocks it.
 
-The app uses Node.js built-ins and has no third-party runtime dependencies. `npm run build` copies the server, source, public assets, and resources to `dist/`; running `npm start` from that directory serves the production copy at `http://localhost:4173` by default. `npm run verify:production` exercises production routes and assets.
+Browser modules are served through an explicit route map in `src/app/server.js`; keep nested imports in that map, and use the production smoke check to traverse the static import graph from `/app.js`. The app uses Node.js built-ins and has no third-party runtime dependencies. `npm run build` copies the server, source, public assets, and resources to `dist/`; running `npm start` from that directory serves the production copy at `http://localhost:4173` by default. `npm run verify:production` exercises production routes and assets.
 
 ## Verification and limits
 

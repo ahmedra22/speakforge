@@ -44,4 +44,4 @@ The content validator currently reports repeated vocabulary as informational war
 
 ## Known verification limits
 
-The local browser automation runtime failed to initialize in the final polish environment, so visual, device, keyboard walkthrough, and live layout checks could not be completed. Lighthouse was not available in the environment; no accessibility/performance score is claimed. No AI provider credentials were configured, so live model responses were not tested. See `docs/agent-handoff.md` for the latest exact QA results and limitations.
+The in-app computer-use runtime failed to initialize. A separate headless Edge session against the production build verified A2, B1, and B1+ Unit 1 audio metadata and controls, visible learning sections, and the A2 three-listen passage unlock. Mobile/tablet layout, screen-reader and full keyboard walkthroughs, print preview, microphone recording, audible browser TTS, and Lighthouse scoring were not completed. No AI provider credentials were configured, so live model responses were not tested. See `docs/agent-handoff.md` for the latest exact QA results and limitations.

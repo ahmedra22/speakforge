@@ -179,3 +179,12 @@ Phase 7 extends the existing `ListeningProgressStore` key and per-unit record wi
 Speaking prompts come from normalized `Unit.speakingPrompts` with stable prompt IDs. `SpeakingSection` accepts source prompts and progress store; optional `targetVocabulary` is shown only if supplied by normalized content. Prompt completion is explicit and stored per prompt. A separate recording-session controller requests microphone permission only on user action, wraps MediaRecorder, creates a local Blob URL for playback, and revokes it on deletion/destroy. Recordings remain in page memory, have no cloud persistence or upload, and recording failures do not block completion.
 
 Future AI integration can ask the learner to confirm a proposed target vocabulary use by calling `recordVocabularyUse(unitId, vocabularyItemId)`; no automatic detection or marking is implemented. Grammar, reviews, and account/cloud work remain separate features.
+## Phase 8 implementation — grammar, reviews, and progress
+
+The implemented learning sequence inserts a configurable review after every three units by default. Review content is derived from the preceding source units: vocabulary, grammar, one passage paragraph per unit, and speaking prompts. Review pages start locked and become available only after all source units are marked complete. Review completion gates the next sequence item.
+
+Unit completion is derived from explicit activity state: the passage must be unlocked after three qualifying listens; every vocabulary entry must reach five learner-confirmed uses; all speaking prompts must be marked complete; and grammar practice must be marked complete when the unit has a practice task. The completion action rechecks both these conditions and sequential availability before writing completion.
+
+Grammar, reviews, unit completion, and last-visited resume data extend the existing versioned local listening-progress store. Book progress is derived from completed units; level progress aggregates books. Audio preferences continue to use their existing separate preference store. This is local browser persistence only; it does not establish learner accounts, cloud sync, or cross-device merging.
+
+The Phase 8 verification report and exact browser/runtime limitation are recorded in `docs/agent-handoff.md`.

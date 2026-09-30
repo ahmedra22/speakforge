@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-09-30  
 **Project owner/creator:** Ahmed Ramadan  
-**Current phase:** Phase 7 Word Tracking, Speaking Prompts, and optional local recording implemented on `feature/word-tracking-speaking`. Grammar, reviews, and AI remain out of scope.
+**Current phase:** Phase 8 Grammar, Reviews, and Full Progress Integration is complete on `feature/grammar-reviews-progress` (implementation commit `e66308d`). Phase 9 AI Practice has not started.
 
 ## Project overview
 
@@ -230,3 +230,51 @@ This phase audited the available resources, inspected the B1 reference UX, recor
 - Browser automation was attempted; the computer-use runtime exited unexpectedly before initializing a browser. No real microphone/browser UI check is claimed.
 - Phase 7 tests cover capped uses, persisted marks, data-driven counters, immediate subscription updates, A2/B1/B1+ prompt source, completion persistence, recording start/stop/playable Blob URL/delete, permission denial, and unsupported API fallback. Run `npm test`, `npm run validate:content`, `npm run build`, and `npm run verify:production` before handoff.
 - Next phase: Grammar + Reviews + Full Progress Integration. AI may later propose a genuine-use event, but the learner must confirm it through `recordVocabularyUse`; recording or prompt completion must never increment word uses automatically.
+## Phase 8 completion — Grammar, Reviews, and Full Progress Integration (2026-09-30)
+
+### Status and Git
+
+- Phase 8 is complete on `feature/grammar-reviews-progress`.
+- Implementation commit: `e66308d` — `Implement grammar reviews and progress`.
+- The final handoff documentation is recorded in a follow-up docs commit.
+- Phase 9 AI Practice has not started. There are no AI provider calls, accounts, or cloud persistence in Phase 8.
+
+### Files changed
+
+- `public/app.js`: browser progress selectors, progression navigation/locks, last-visited resume, grammar and review clients.
+- `scripts/verify-production.js`: smoke assertions for Phase 8 pages and APIs, alongside existing audio/content checks.
+- `src/app/render.js`, `src/app/server.js`: review route and sequence, level progress-context, and review data APIs; serve progression modules.
+- `src/components/grammar-section.js`, `src/components/review-page.js`: grammar and locked review page markup.
+- `src/components/unit-list.js`, `src/features/catalog/pages.js`, `src/content/manifests/catalog.js`: progress-aware unit/review sequence and configurable review frequency.
+- `src/domain/progression.js`: sequence construction, review assembly, completion gates, and book/level aggregation.
+- `src/features/grammar/grammar-section.js`, `src/features/reviews/review-experience.js`: browser interactions for completion and review activities.
+- `src/features/listening/listening-progress.js`: extended the existing versioned progress store; no parallel store was introduced.
+- `tests/grammar-reviews-progress.test.js`: focused feature, persistence, aggregation, and cross-book tests.
+- `docs/architecture.md`, `docs/agent-handoff.md`: Phase 8 model and delivery notes.
+
+### Grammar, reviews, progression, and persistence
+
+- Grammar renders the normalized unit title, explanation, examples, and practice task for A2, B1, and B1+. Grammar completion is explicit and persisted by canonical unit ID.
+- A review checkpoint follows each configurable group of three units. Review materials are assembled from those source units’ vocabulary, grammar, first passage paragraphs, and speaking prompts. No review audio or source content is invented.
+- A review remains locked until all its source units are complete. Completing a review is stored separately; subsequent sequence items remain gated until that review is complete.
+- A unit is complete only after the passage is unlocked by three qualifying listens, every vocabulary item is mastered at five learner-confirmed uses, all speaking prompts are complete, and grammar practice is marked complete when present. Completion unlocks the next sequence item.
+- Grammar, unit completion, review completion, prior listening/vocabulary/speaking progress, and last-visited level/book/item share the existing versioned local progress key. Book and level totals are derived from unit state; cross-book aggregation is covered by a test. Audio preferences remain in their separate preference key.
+
+### Verification results
+
+- Focused Phase 8 suite: **8 passed, 0 failed** (`node --test tests/grammar-reviews-progress.test.js`). Coverage includes normalized grammar across A2/B1/B1+, grammar persistence, review source assembly, lock/unlock and completion persistence, sequence gates, unit completion, book/level progress, resume/persistence, and A2/B1 cross-book isolation/aggregation.
+- Full suite: **44 passed, 0 failed** (`npm test`). Existing regression tests cover AudioPlayer controls, qualified listen tracking and passage unlock, vocabulary, TTS, Word Tracking, speaking/recording, navigation, and content loading.
+- Content validation: **passed**, 34 units across three available books; 45 repeated-vocabulary warnings remain informational.
+- Production build: **passed** (`npm run build`).
+- Production smoke test: **passed** (`npm run verify:production`); verifies grammar and unit completion UI, locked review route, sequence/review/level progress APIs, existing A2/B1/B1+ content, speech/recording modules, passage API, audio byte ranges, cover, and stylesheet.
+- `git diff --check`: **passed** before commit. Git status was checked after commit and is clean.
+
+### Browser verification and limits
+
+- Browser verification was attempted. The computer-use runtime exited before browser initialization with `node_repl kernel exited unexpectedly`, reporting `windows sandbox failed: helper_unknown_error: setup refresh had errors`.
+- A2 Unit 1, B1 Unit 1, and B1+ Unit 1 therefore have no visual/browser verification claim. Review unlock and resume behavior were validated through focused tests and production route/API checks, not a browser session.
+- The six original product specification files remain placeholders. Current completion thresholds and review frequency are explicit implementation assumptions from the Phase 8 brief. Reviews have no authored audio or independent source dataset.
+
+### Next phase
+
+- Phase 9: AI Practice, only when separately requested. Do not begin it as part of Phase 8 verification.

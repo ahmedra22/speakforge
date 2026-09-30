@@ -22,7 +22,7 @@ export function handleAudioShortcut(event, controller) {
   return false;
 }
 
-export function createAudioController({ audio, preferences, onChange = () => {} }) {
+export function createAudioController({ audio, preferences, onChange = () => {}, onPlaybackEvent = () => {} }) {
   const initialSpeed = preferences?.getSpeed?.() ?? 1;
   let lastAudibleVolume = audio?.volume > 0 ? audio.volume : 0.8;
   const state = {
@@ -43,14 +43,18 @@ export function createAudioController({ audio, preferences, onChange = () => {} 
     publish();
   };
   const onCanPlay = () => { if (state.status === 'loading') state.status = 'ready'; publish(); };
+  const emitPlayback = (type, extra = {}) => { try { onPlaybackEvent({ type, position: audio.currentTime || 0, duration: audio.duration, ...extra }); } catch {} };
   const onTime = () => {
     state.currentTime = audio.currentTime || 0;
     if (Number.isFinite(audio.duration)) state.duration = audio.duration;
-    publish();
+    emitPlayback('timeupdate'); publish();
   };
-  const onPlay = () => setStatus('playing');
-  const onPause = () => { if (!['ended', 'error'].includes(state.status)) setStatus('paused'); };
+  const onPlay = () => { emitPlayback('play'); setStatus('playing'); };
+  const onPause = () => { emitPlayback('pause'); if (!['ended', 'error'].includes(state.status)) setStatus('paused'); };
+  const onSeeking = () => emitPlayback('seeking');
+  const onSeeked = () => emitPlayback('seeked');
   const onEnded = async () => {
+    emitPlayback('ended');
     if (state.repeatsRemaining > 0) {
       state.repeatsRemaining -= 1;
       try { audio.currentTime = 0; state.currentTime = 0; publish(); await audio.play(); }
@@ -62,6 +66,7 @@ export function createAudioController({ audio, preferences, onChange = () => {} 
     setStatus('ended');
   };
   const onError = () => {
+    emitPlayback('error');
     state.sequenceStarted = false;
     setStatus('error', 'Audio unavailable for this unit. The audio file could not be loaded or played.');
   };
@@ -73,6 +78,7 @@ export function createAudioController({ audio, preferences, onChange = () => {} 
     audio.addEventListener('play', onPlay);
     audio.addEventListener('pause', onPause);
     audio.addEventListener('ended', onEnded);
+    audio.addEventListener('seeking', onSeeking); audio.addEventListener('seeked', onSeeked);
     audio.addEventListener('error', onError);
   }
   async function play() {
@@ -89,7 +95,7 @@ export function createAudioController({ audio, preferences, onChange = () => {} 
     seek(time) {
       if (!audio || !Number.isFinite(time)) return;
       const max = Number.isFinite(audio.duration) ? audio.duration : Math.max(0, time);
-      audio.currentTime = Math.min(Math.max(0, time), max); state.currentTime = audio.currentTime; publish();
+      const from=audio.currentTime; audio.currentTime = Math.min(Math.max(0, time), max); emitPlayback('seek',{from,to:audio.currentTime}); state.currentTime = audio.currentTime; publish();
     },
     seekBy(delta) { this.seek((audio?.currentTime ?? 0) + delta); },
     setSpeed(value) {
@@ -126,11 +132,12 @@ export function createAudioController({ audio, preferences, onChange = () => {} 
       audio.removeEventListener('canplay', onCanPlay); audio.removeEventListener('timeupdate', onTime);
       audio.removeEventListener('play', onPlay); audio.removeEventListener('pause', onPause);
       audio.removeEventListener('ended', onEnded); audio.removeEventListener('error', onError);
+      audio.removeEventListener('seeking', onSeeking); audio.removeEventListener('seeked', onSeeked);
     },
   };
 }
 
-export function mountAudioPlayer(root, { preferences, onStatus = () => {} } = {}) {
+export function mountAudioPlayer(root, { preferences, onStatus = () => {}, onPlaybackEvent = () => {} } = {}) {
   const audio = root.querySelector('audio');
   if (!audio) return null;
   const controls = {
@@ -157,7 +164,7 @@ export function mountAudioPlayer(root, { preferences, onStatus = () => {} } = {}
     for (const button of controls.repeat) button.setAttribute('aria-pressed', String(Number(button.dataset.repeat) === state.repeatCount));
     onStatus(state);
   };
-  const controller = createAudioController({ audio, preferences, onChange: render });
+  const controller = createAudioController({ audio, preferences, onChange: render, onPlaybackEvent });
   const shortcuts = (event) => handleAudioShortcut(event, controller);
   document.addEventListener('keydown', shortcuts);
   controls.play.addEventListener('click', () => controller.toggle());

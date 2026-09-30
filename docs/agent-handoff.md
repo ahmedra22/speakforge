@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-09-30  
 **Project owner/creator:** Ahmed Ramadan  
-**Current phase:** Phase 4 Unit Player + Audio Foundation complete; listening completion, passage, Follow Along, vocabulary, speaking, grammar, reviews, and AI remain out of scope.
+**Current phase:** Phase 5 listening unlock and passage reading foundation implemented on `feature/listening-unlock`. Vocabulary, speaking, grammar, reviews, and AI remain out of scope.
 
 ## Project overview
 
@@ -12,7 +12,7 @@ SpeakForge is intended to be a scalable, data-driven English-learning platform o
 
 - Git initialized on `master`; initial commit `866ea68` records the source resources and foundation. `.gitignore`, npm scripts, Node.js ESM source, tests, and route descriptors are present.
 - Architecture recommendation and audit findings are in [architecture.md](architecture.md).
-- Responsive navigation/catalog UI and reusable unit pages are implemented. Unit pages now include the real unit-level AudioPlayer. No listen-completion logic, passage, progress persistence, or AI practice exists.
+- Responsive navigation/catalog UI and reusable unit pages are implemented. Unit pages now include the real unit-level AudioPlayer. Listen completion, local progress persistence, gated passage reading, and a timing-ready reader are implemented.
 - Supplied specs are placeholders (53 bytes each); they need real product requirements before implementation can confidently enforce them.
 - A2 structured JSON is concatenated unit objects; the shared parser now accepts concatenated objects, single objects, and array-wrapped data without source edits.
 
@@ -199,3 +199,13 @@ This phase audited the available resources, inspected the B1 reference UX, recor
 - Next phase: **3-Listen Completion + Passage Unlock + Follow Along Architecture**. Keep learning completion events outside the reusable AudioPlayer and build them as a separate domain feature.
 - Phase 4 implementation commit: `dd3bbb8` (`Add reusable unit audio player`).
 
+
+## Phase 5 listening and passage foundation
+
+- `src/features/audio/audio-player.js` remains the sole media controller. It emits a generic playback event hook; it does not own learning policy. `src/features/listening/listen-completion.js` qualifies natural end events using near-complete continuous playback coverage (99.5%), preventing direct/forward seeks from counting. Rewind intervals merge with prior coverage; each repeat loop yields one eligible event.
+- `src/features/listening/listening-progress.js` provides a versioned injectable storage boundary (`get`, `recordCompletedListen`, `set`, `clear`). State is per canonical unit ID and stores count plus monotonic unlock; UI has no direct localStorage writes.
+- Unit HTML contains only lock/progress UI. Passage JSON is fetched from `/api/units/:id/passage` after the persisted state is unlocked. The API returns normalized passage paragraphs and an optional timing map. This is a presentation gate for the requested learning flow, not an authorization boundary.
+- `src/domain/audio-timing.js` validates paragraph/sentence/phrase/word hierarchies, their bounds, order, and paragraph membership. `src/features/reading/passage-reader.js` consumes optional real timing and uses the native audio time; without timing, it offers reading alongside the ordinary unit player and clearly reports that sync is unavailable.
+- Local timing investigation: Whisper `small` on A2 Unit 1 returned a transcript matching the source text and word timestamps. Word time estimates were not independently reviewed for alignment precision, so no timing map was promoted into course content; Follow Along remains unavailable for all current units. Do not treat the experiment as proof of precise alignment.
+- `npm test` (21 tests), `npm run validate:content` (34 units; 45 existing repeated-vocabulary warnings), `npm run build`, and `npm run verify:production` passed. Browser automation could not be completed in this environment; no visual/manual browser check is claimed.
+- Feature boundaries: audio emits playback events; listening qualifies and persists completion; the catalog page hosts progress/lock composition; the reader handles passage display and optional synchronization. Later vocabulary, Word Tracking, speaking, and grammar features can consume unit content independently.

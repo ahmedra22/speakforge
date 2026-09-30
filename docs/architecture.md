@@ -159,3 +159,11 @@ The content engine is implemented in JavaScript ESM using Node.js built-ins, wit
 ## Phase 4 audio boundary
 
 The reusable player is split between `src/components/audio-player.js` (markup), `src/features/audio/audio-player.js` (native media state and controls), and `src/features/audio/audio-preferences.js` (scoped, injectable playback-speed persistence). Unit detail loads its normalized audio reference and passes it to the component. The HTTP server serves one requested MP3 with byte-range support. Audio state covers loading, ready, playing, paused, ended, and error; it does not count legitimate listens or couple to progress. Future listen completion and Follow Along must consume a separate event boundary without making the player unit-specific.
+
+## Phase 5 listening, unlock, and timing boundary
+
+The existing AudioPlayer remains independent from completion policy and exposes generic playback events through `onPlaybackEvent`. A domain tracker grants one completion only after natural end, start near zero, and at least 99.5% continuous naturally observed coverage. Seeking forward leaves a coverage gap; replayed audio can fill a legitimate gap. Repeat mode emits a separate ended event for each loop.
+
+A versioned `ListeningProgressStore` accepts an injectable storage adapter and keys records by canonical unit ID. It persists listen count and monotonic passage unlock. The browser implementation uses localStorage behind this interface. Passage text is omitted from initial HTML and requested from the normalized content endpoint only after unlock. The endpoint is a product-flow gate, not a security boundary.
+
+`AudioTiming` version 1 supports nested paragraph, sentence, phrase, and word segments with IDs, text, times, and paragraph membership. The validator checks ordering and bounds. The reader consumes supplied timing against the native unit audio; absent timing uses ordinary reading plus unit playback, without guessed timestamp interpolation. Local Whisper experimentation on A2 Unit 1 produced a matching transcript and word estimates, but no estimates were independently reviewed, so no sidecar is shipped and no unit advertises synchronization.

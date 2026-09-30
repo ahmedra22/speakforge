@@ -14,7 +14,7 @@ SpeakForge is intended to be a scalable, data-driven English-learning platform o
 - Architecture recommendation and audit findings are in [architecture.md](architecture.md).
 - Responsive navigation/catalog UI and a metadata-only UnitPage placeholder now use the Phase 2 content loader. There is still no learning player, full audio player, AI practice, or progress persistence abstraction.
 - Supplied specs are placeholders (53 bytes each); they need real product requirements before implementation can confidently enforce them.
-- A2 structured JSON is concatenated unit objects and fails parsing as one JSON document. Content adapters must handle only after confirming exact formats and adding validation.
+- A2 structured JSON is concatenated unit objects; the shared parser now accepts concatenated objects, single objects, and array-wrapped data without source edits.
 
 ## Actual resource inventory
 
@@ -71,7 +71,7 @@ Do not claim checks passed without running them. Once the app scaffold exists, r
 2. Inspect exact JSON framing/validity of all three structured files and decide an adapter strategy without changing source files.
 3. Verify cover dimensions and audio-file integrity/durations, then create explicit manifests.
 4. Resolve learning-policy choices, review content strategy, persistence identity, hosting, and AI data/safety requirements.
-5. Begin only the next implementation phase: establish app scaffold and shared domain/content contracts; do not jump to full UI or AI.
+5. The navigation phase is complete; the next phase is Unit Player + Audio Foundation, with the current UnitPage intentionally limited to metadata.
 
 ## Current task
 
@@ -158,5 +158,6 @@ This phase audited the available resources, inspected the B1 reference UX, recor
 
 ### Git and next phase
 
-- Working branch: `feature/levels-books-navigation`. Phase 3 commit is recorded below after final commit creation.
+- Working branch: `feature/levels-books-navigation`. Navigation implementation commit: `ecd974e` (`Build levels books and unit navigation`).
 - The next requested phase is **Unit Player + Audio Foundation**. Keep the current UnitPage as a metadata-only placeholder until that phase; add actual progress state only after a progress abstraction is established.
+

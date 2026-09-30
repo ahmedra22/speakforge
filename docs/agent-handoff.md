@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-09-30  
 **Project owner/creator:** Ahmed Ramadan  
-**Current phase:** Phase 9 AI Practice implementation is committed on `feature/ai-practice` (`e7c3dec`). See the Phase 9 handoff below for validation results and environment limitations.
+**Current phase:** Phase 10 final polish is implemented on `feature/final-polish` (`97f26fa`). Automated checks pass; browser, Lighthouse, and live-provider limitations are recorded in the Phase 10 handoff below.
 
 ## Project overview
 
@@ -338,3 +338,61 @@ This phase audited the available resources, inspected the B1 reference UX, recor
 ### Next phase
 
 - Final Product Polish + Responsive QA + Accessibility + Performance + Production Readiness.
+
+## Phase 10 — Final Product Polish + QA + Production Readiness (2026-09-30)
+
+### Status and Git
+
+- Final status: **READY WITH KNOWN LIMITATIONS**. Automated checks pass, but visual/browser QA, Lighthouse scoring, and live provider behavior could not be verified in this environment.
+- Branch: `feature/final-polish`.
+- Implementation commit: `97f26fa` — `Polish UI and production readiness`.
+- The final QA record and documentation updates are committed separately after this implementation commit.
+- No authentication, billing, subscriptions, admin, cloud sync, new course content, or fabricated timing data were added.
+
+### Polish and files changed
+
+- `src/components/method-section.js`: added the requested reusable six-step Method explanation in English and Arabic. The language buttons expose their pressed state; Arabic content has `lang="ar"` and `dir="rtl"`.
+- `src/features/catalog/pages.js`, `public/app.js`: added the Print Unit action and Method language switching on shared unit pages.
+- `public/styles.css`: added Method presentation and unit print rules; print hides global navigation, footer, playback controls, practice UI, and progress actions while retaining unit title, vocabulary, speaking prompts, grammar, and any passage already loaded after its existing unlock. Before unlock, only the lock message can print; passage text remains absent.
+- `public/styles.css`: improved the focus ring and low-contrast small labels identified during a contrast spot check. The focus color measures 5.35:1 against paper and 4.14:1 against forest; muted text is 4.72:1 and the unit-number accent is 5.75:1 against paper. These are targeted color checks, not a complete WCAG audit.
+- `tests/final-polish.test.js`: exercises Print Unit and Method rendering on A2 Unit 1 and 10, B1 Unit 1 and 12, and B1+ Unit 1 and 12; verifies Arabic RTL metadata and confirms initial unit HTML contains no locked passage text. It also checks print CSS rules.
+- `README.md`: documents runtime setup, routes, actual content availability, progress, AI configuration, verification commands, and known limitations.
+- `docs/architecture.md`: replaced the stale proposed architecture snapshot with the implemented application boundaries and current data/progress/provider model.
+- No runtime dependencies were added. Source materials under `resources/` were not modified.
+
+### Regression and content integrity
+
+- Existing shared routes render reusable unit pages. Route tests cover A2, B1, B1+, planned future levels, unknown units, and HTTP assets. New cross-level checks include the first and last available units in all three books. Actual availability remains A2 = 10, B1 = 12, B1+ = 12.
+- B2, B2+, and C1 remain planned states with no units. No B1+ 13–24 units were introduced.
+- Passage text still arrives only from the passage endpoint after the existing three-listen unlock. No timing map was fabricated.
+- Audio playback, speed, repeat, seeking, qualified listen tracking, vocabulary TTS/Play All cancellation, five-use Word Tracking, speaking/optional recording, grammar/reviews/progress, resume, and AI server-side context/provider behavior are included in the passing regression suite. Print rules hide the course-player UI only in print media; the underlying controls and progression logic are unchanged.
+- Security review: `.env` is ignored and not tracked; `.env.example` has blank credential/model values. AI credentials and provider calls remain server-side. No live key was present in source or the example file.
+
+### Verification results
+
+- `npm test`: **59 passed, 0 failed**. This includes the existing audio, listen-unlock, content, vocabulary/TTS, speaking/recording, progression, review, persistence, navigation, and AI Practice checks, plus two final-polish checks.
+- `npm run validate:content`: **passed**, 34 units across three books; 45 repeated-vocabulary warnings remain informational.
+- `npm run build`: **passed**.
+- `npm run verify:production`: **passed** for Phase 8 progress/review routes, Phase 9 unconfigured AI endpoint behavior, and current content/audio routes.
+- `git diff --check`: **passed** before commit.
+- Future-level, first-unit, last-unit, and reusable-page behavior is checked with route/render and content tests. A real desktop/tablet/mobile/wide-desktop visual walkthrough was not possible.
+
+### Accessibility, browser, and service limitations
+
+- Static semantic and feature tests verify the main landmark, navigation, labeled audio controls, dialog focus behavior, statuses, button names, RTL metadata, and selected keyboard interactions. Audio keyboard shortcuts are tested. A full screen-reader/keyboard walkthrough was not completed.
+- Lighthouse is unavailable: no `lighthouse` executable or package was present. No Lighthouse score is claimed; the target of 90+ was not measured.
+- Browser automation was attempted but the runtime exited before initializing: `node_repl kernel exited unexpectedly` with `windows sandbox failed: helper_unknown_error: setup refresh had errors`. Therefore mobile, tablet, desktop, wide desktop, actual print preview, and manual A2/B1/B1+ UI verification are **not completed**.
+- No AI provider credentials are configured. Server-side configuration handling and controlled provider tests pass, but live model responses and provider-specific behavior were not verified.
+- Server-side AI sessions and rate limits remain process-memory only; progress remains local to the browser. Follow Along is unavailable where source timing is absent.
+
+### Run locally
+
+- From the repository root, run `npm start` (Node.js 20+). Default URL: `http://localhost:4173`.
+- Production files are built to `dist/` with `npm run build`; run `npm start` from `dist/` to serve that copy at the same default URL.
+
+### Final state
+
+- Phase 10 polish is committed on `feature/final-polish`.
+- Automated tests, content validation, production build, and production smoke checks pass.
+- The product is **READY WITH KNOWN LIMITATIONS**, not declared fully production ready, until browser/device/print and Lighthouse checks can run and live AI behavior is verified with a configured provider.
+- This is the final planned implementation phase. No additional product phase was started.

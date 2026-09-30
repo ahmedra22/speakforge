@@ -1,9 +1,9 @@
 const image = (path) => ({ path, mediaType: 'image/jpeg' });
 const pdf = (path) => ({ path, mediaType: 'application/pdf' });
 export const books = [
- {id:'a2-foundation',routeSlug:'a2',levelId:'a2',title:'Read to Speak A2',status:'available',sourcePdf:pdf('resources/books/a2/Read to Speak A2.pdf'),cover:image('resources/covers/a2.jfif')},
- {id:'b1-core',routeSlug:'b1-core',levelId:'b1',title:'Read to Speak B1',status:'available',sourcePdf:pdf('resources/books/b1/Read to Speak B1.pdf'),cover:image('resources/covers/b1.jfif')},
- {id:'b1-plus-bridge',routeSlug:'b1plus-bridge',levelId:'b1-plus',title:'Read to Speak B1+',status:'available',sourcePdf:pdf('resources/books/b1-plus/Read to Speak B1 +.pdf'),cover:image('resources/covers/b1-plus/b1+.jfif')},
+ {id:'a2-foundation',reviewFrequency:3,routeSlug:'a2',levelId:'a2',title:'Read to Speak A2',status:'available',sourcePdf:pdf('resources/books/a2/Read to Speak A2.pdf'),cover:image('resources/covers/a2.jfif')},
+ {id:'b1-core',reviewFrequency:3,routeSlug:'b1-core',levelId:'b1',title:'Read to Speak B1',status:'available',sourcePdf:pdf('resources/books/b1/Read to Speak B1.pdf'),cover:image('resources/covers/b1.jfif')},
+ {id:'b1-plus-bridge',reviewFrequency:3,routeSlug:'b1plus-bridge',levelId:'b1-plus',title:'Read to Speak B1+',status:'available',sourcePdf:pdf('resources/books/b1-plus/Read to Speak B1 +.pdf'),cover:image('resources/covers/b1-plus/b1+.jfif')},
  {id:'b2',routeSlug:'b2',levelId:'b2',title:'Read to Speak B2',status:'planned',sourcePdf:pdf('resources/books/b2/Read to Speak B2.pdf'),cover:image('resources/covers/b2/B2.jfif')},
  {id:'b2-plus',routeSlug:'b2-plus',levelId:'b2-plus',status:'planned',cover:image('resources/covers/b2-plus/B2+.jfif')},
  {id:'c1',routeSlug:'c1',levelId:'c1',status:'planned',cover:image('resources/covers/c1/C1.jfif')},

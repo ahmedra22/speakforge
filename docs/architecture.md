@@ -188,3 +188,15 @@ Unit completion is derived from explicit activity state: the passage must be unl
 Grammar, reviews, unit completion, and last-visited resume data extend the existing versioned local listening-progress store. Book progress is derived from completed units; level progress aggregates books. Audio preferences continue to use their existing separate preference store. This is local browser persistence only; it does not establish learner accounts, cloud sync, or cross-device merging.
 
 The Phase 8 verification report and exact browser/runtime limitation are recorded in `docs/agent-handoff.md`.
+
+## Phase 9 implementation — AI Practice boundary
+
+The UnitPage includes a Practice with AI action that opens an accessible responsive dialog for the selected unit. The browser sends only a normalized unit ID to start a session and then a session ID plus learner messages. The server resolves the actual Level, Book, and Unit through `contentLoader` and constructs `UnitContext`; the browser cannot substitute authoritative passage, vocabulary, grammar, or prompt data.
+
+`UnitContext` carries the selected level/book/unit identity, full passage, vocabulary IDs/words/parts of speech/meanings/examples, all speaking prompts, and grammar title/explanation/examples/practice task. `createAiPracticeSessionService` owns server-memory messages and ordered prompt progress. Its provider dependency uses a narrow `generateResponse({ instruction, messages, signal })` interface. The current implementation is an OpenAI-compatible adapter configured only with server environment values. The unit instruction grounds course facts in the context, keeps conversation concise, advances through one speaking prompt at a time, and supports grammar feedback, vocabulary quizzes, and structured read-aloud requests.
+
+Vocabulary usage responses are validated against current-unit vocabulary IDs, model confidence, and learner text, and exact copied assistant prompts are filtered. The browser asks the learner before calling the existing `recordVocabularyUse`; the existing five-use limit remains authoritative. Grammar corrections are structured feedback tied to the selected unit grammar. Read-aloud requests and AI response speech reuse the existing `SpeechService`; optional voice input uses browser speech recognition and requires transcript review before send.
+
+AI completion is an explicit session action persisted through the existing `ListeningProgressStore.aiPractice` record. The existing unit completion engine accepts `requireAiPractice`; current books configure it as optional. No separate progress system was created. Session state is process-memory with a three-hour expiry; the browser keeps its session ID in `sessionStorage`. Authentication, durable user storage, and cross-device sync remain out of scope.
+
+See `docs/agent-handoff.md` for environment setup, test/build/smoke results, provider/browser verification limits, and the Phase 9 implementation commit.

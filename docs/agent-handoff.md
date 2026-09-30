@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-09-30  
 **Project owner/creator:** Ahmed Ramadan  
-**Current phase:** Phase 8 Grammar, Reviews, and Full Progress Integration is complete on `feature/grammar-reviews-progress` (implementation commit `e66308d`). Phase 9 AI Practice has not started.
+**Current phase:** Phase 9 AI Practice implementation is committed on `feature/ai-practice` (`e7c3dec`). See the Phase 9 handoff below for validation results and environment limitations.
 
 ## Project overview
 
@@ -278,3 +278,63 @@ This phase audited the available resources, inspected the B1 reference UX, recor
 ### Next phase
 
 - Phase 9: AI Practice, only when separately requested. Do not begin it as part of Phase 8 verification.
+
+## Phase 9 — AI Practice + Unit Context + Conversation (2026-09-30)
+
+### Status and Git
+
+- Implementation branch: `feature/ai-practice`.
+- Implementation commit: `e7c3dec` — `Implement AI Practice foundation`.
+- Phase 8 remains intact; its progress store was extended in place only with AI completion accessors.
+- Phase 9 accounts, authentication, memberships, subscriptions, billing, admin tools, and cloud sync were not implemented.
+
+### Architecture and changed files
+
+- `src/domain/ai-practice/unit-context.js`: builds a structured context from the normalized server-resolved Level, Book, and Unit. It includes the complete passage, all vocabulary fields, speaking prompts, and grammar focus/examples/task. It also builds the private conversation instruction and identifies the current prompt.
+- `src/domain/ai-practice/session.js`: owns server-memory sessions (UUID, unit ID, start time, structured messages, prompt progress, suggestions, completion state), a three-hour expiry, a 100-session cap, message bounds, ordered prompt progress, and response validation.
+- `src/infrastructure/ai/provider.js`: provider interface (`generateResponse`) and the current OpenAI-compatible Chat Completions adapter. Credentials and provider requests stay on the server. Other adapters can implement the same interface.
+- `src/app/server.js`: resolves unit IDs through the existing content loader and owns POST `/api/ai-practice/sessions`, POST `/api/ai-practice/messages`, POST `/api/ai-practice/complete`, and GET `/api/ai-practice/sessions/:id`. Browser context/transcripts are not accepted as authoritative course content. The API checks JSON requests, bounds payloads, limits requests per IP, cancels provider work on disconnect, and returns useful configuration/provider errors.
+- `src/components/ai-practice-panel.js`, `src/features/ai-practice/ai-practice-panel.js`: unit entry point, accessible dialog, session resume, conversation, corrections, learner-confirmed vocabulary marks, voice controls, and completion action.
+- `src/features/catalog/pages.js`, `public/app.js`, `public/styles.css`: compose the AI panel into the current UnitPage, connect the existing SpeechService and ListeningProgressStore, and provide a desktop drawer/mobile full-screen layout. `books[].aiPracticeRequired` controls the optional unit-completion gate and is false for current books.
+- `src/features/listening/listening-progress.js`: preserves the existing Phase 8 store and adds only `getAiPracticeState` and `setAiPracticeCompleted` for the already-present `aiPractice` record.
+- `src/domain/progression.js`: allows the existing completion calculation to accept `requireAiPractice`; it remains optional unless configured for a book.
+- `.env.example`: documents `AI_PROVIDER`, `AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL`, and `AI_TIMEOUT_MS`; `.env` remains ignored by Git.
+- `tests/ai-practice.test.js`: cross-level context, provider/session/API, safety, completion, and UI contract checks.
+- `scripts/verify-production.js`: production checks for the AI panel assets, unit entry, validated session endpoint, and honest unconfigured state.
+
+### Context, conversation, and learning behavior
+
+- UnitContext is constructed only after `contentLoader.getUnit(unitId)` resolves the chosen unit and its level/book. It carries the normalized content rather than client-provided content.
+- The model instruction limits course-content facts to that context, tells the provider to adapt to the selected level, follow speaking prompts one at a time, keep answers concise, support vocabulary-only quizzes, and offer occasional grammar-focused feedback. The server clamps prompt progress so a response cannot skip multiple prompts.
+- The provider returns validated structured data: reply, candidate vocabulary usage, optional correction, optional read-aloud request, and prompt progress. Unknown vocabulary IDs, low-confidence suggestions, absent target words, and verbatim copied assistant prompts are suppressed.
+- Suggestions never write progress automatically. “Add 1 Word Tracking mark” calls the existing learner action only after confirmation; the existing five-use cap and mastered-state behavior remain in force. “Not now” dismisses the suggestion for the current browser session.
+- Grammar feedback is displayed as You said / Better / Why and associates with the current unit grammar. Read-word/meaning/example requests use the existing `SpeechService`. AI response speech has explicit Speak and Stop controls. Browser speech recognition is optional; the learner reviews the transcript before sending it.
+- AI Practice completion requires explicit learner action after all four prompts have been progressed. It persists through the existing progress store. It affects unit completion only when `aiPracticeRequired` is true for that book; current books keep it optional.
+- Session messages persist in server memory during the current process, and the browser keeps the session ID in `sessionStorage`. Sessions expire after three hours and are lost on server restart; this phase does not add durable or cross-device storage.
+
+### Environment and provider setup
+
+- Copy `.env.example` to `.env` for local development and fill server-only values, or inject them through the server environment. Process environment values take precedence over `.env`; the server reads `.env` from its working directory.
+- The current adapter expects an OpenAI-compatible `/chat/completions` endpoint. `AI_API_KEY` and `AI_MODEL` are required. Invalid or absent configuration leaves the rest of SpeakForge usable and displays “AI Practice is not configured yet.” No scripted response is presented as AI output.
+- No real provider credentials were configured in this workspace. Provider behavior is covered with injected test adapters; a live provider request and billing behavior were not verified.
+
+### Verification
+
+- Focused Phase 9 tests: **13 passed, 0 failed** (`node --test tests/ai-practice.test.js`). They cover actual A2/B1/B1+ context, all context fields, server-side resolution, provider contract, missing/invalid configuration, malformed output, session history, prompt progression, structured suggestions/corrections/read requests, copied-prompt filtering, learner confirmation, progress gating, rate limiting, and UI/responsive/accessibility contracts.
+- Full suite: **57 passed, 0 failed** (`npm test`), including existing audio, listen unlock, vocabulary/TTS, Word Tracking, speaking/recording, Phase 8 progression, navigation, and content tests.
+- `npm run validate:content`: passed for 34 units in three books; the 45 repeated-vocabulary warnings are informational and pre-existing.
+- `npm run build`: passed.
+- `npm run verify:production`: passed, including Phase 8 routes, Phase 9 unit entry/session API, unknown-unit rejection, untrusted browser context rejection, unconfigured-provider response, and existing content/audio routes.
+- `git diff --check`: passed before commit.
+
+### Browser verification and limitations
+
+- Browser automation was attempted but its runtime exited before initializing: `node_repl kernel exited unexpectedly` with `windows sandbox failed: helper_unknown_error: setup refresh had errors`.
+- A2 Unit 1, B1 Unit 1, and B1+ Unit 1 have no visual/mobile browser verification claim. The AI interaction and voice controls have not been tested in a live browser.
+- No live AI provider was configured, so actual model output, provider-specific behavior, and external network latency remain unverified. Tests use controlled providers and the production smoke test deliberately uses the unconfigured-provider path.
+- Current server-side rate limits are in-memory per IP: 10 session starts, 30 messages, and 20 completions per minute. They reset with the process and are not a substitute for account-level quotas; authentication and cloud features remain out of scope.
+- The Phase 9 code is isolated behind the provider interface and existing content/progress/speech boundaries; no new runtime dependencies were added.
+
+### Next phase
+
+- Final Product Polish + Responsive QA + Accessibility + Performance + Production Readiness.

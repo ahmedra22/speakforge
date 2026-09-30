@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-09-30  
 **Project owner/creator:** Ahmed Ramadan  
-**Current phase:** Phase 6 vocabulary and browser text-to-speech implemented on `feature/vocabulary-tts`. Word Tracking, speaking, grammar, reviews, and AI remain out of scope.
+**Current phase:** Phase 7 Word Tracking, Speaking Prompts, and optional local recording implemented on `feature/word-tracking-speaking`. Grammar, reviews, and AI remain out of scope.
 
 ## Project overview
 
@@ -12,7 +12,7 @@ SpeakForge is intended to be a scalable, data-driven English-learning platform o
 
 - Git initialized on `master`; initial commit `866ea68` records the source resources and foundation. `.gitignore`, npm scripts, Node.js ESM source, tests, and route descriptors are present.
 - Architecture recommendation and audit findings are in [architecture.md](architecture.md).
-- Responsive navigation/catalog UI and reusable unit pages are implemented. Unit pages now include the real unit-level AudioPlayer. Listen completion, local progress persistence, gated passage reading, timing-ready reader, data-driven vocabulary cards and browser speech are implemented.
+- Responsive navigation/catalog UI and reusable unit pages are implemented. Unit pages now include the real unit-level AudioPlayer. Listen completion, gated passage reading, timing-ready reader, data-driven vocabulary/TTS, persisted Word Tracking, prompt completion, and optional page-local recordings are implemented.
 - Supplied specs are placeholders (53 bytes each); they need real product requirements before implementation can confidently enforce them.
 - A2 structured JSON is concatenated unit objects; the shared parser now accepts concatenated objects, single objects, and array-wrapped data without source edits.
 
@@ -218,3 +218,13 @@ This phase audited the available resources, inspected the B1 reference UX, recor
 - Browser automation was attempted but the computer-use runtime exited unexpectedly before surface initialization. No visual, audible, or device-level browser verification is claimed.
 - Checks: `npm test` (28 tests), `npm run validate:content` (34 units, 45 existing repeated-vocabulary warnings), `npm run build`, and `npm run verify:production` all passed. Production smoke checks confirm A2/B1/B1+ unit pages render normalized vocabulary and TTS modules are served.
 - Next phase: Word Tracking + Speaking Prompts + Optional Recording. Word Tracking should supply a real `progress.get(vocabularyItemId)` status interface; do not infer mastery from speech playback.
+## Phase 7 Word Tracking and Speaking
+
+- Branch: `feature/word-tracking-speaking`. Extended `src/features/listening/listening-progress.js` in place; all per-unit progress uses the existing `speakforge.listening.v1.<scope>` storage object and preserves listen count/unlock. There is no second persistence system.
+- `getVocabularyState(unitId,wordId)`, `recordVocabularyUse(unitId,wordId)`, and `getWordTrackingSummary(unitId,items)` model 0–5 uses; uses are capped at five and `learned`/`mastered` derives only from reaching five. Store subscription refreshes marks, summary, and All/Not Started/In Progress/Mastered filters immediately. Prompt completion uses `getSpeakingState`, `setSpeakingCompleted`, and `getSpeakingSummary` in the same store.
+- VocabularyCard extension adds five visual marks, an accessible Add use action, mastered state, and dynamic Word Tracking X/Y. Manual marks are independent from speech, recording, and prompt completion; no automatic or AI word detection exists.
+- `src/components/speaking-section.js` renders normalized prompt IDs/text with dynamic count and optional target words only if content supplies them. `src/features/speaking/speaking-section.js` owns completion/recording UI; `recording-session.js` provides injectable browser MediaRecorder/getUserMedia and object-URL lifecycle. Nothing uploads. Recordings last only for the current page session.
+- Permission denial, missing MediaRecorder, and missing microphone APIs keep manual completion usable and show a clear message. Recording playback uses a native audio element; delete/restart revokes the object URL.
+- Browser automation was attempted; the computer-use runtime exited unexpectedly before initializing a browser. No real microphone/browser UI check is claimed.
+- Phase 7 tests cover capped uses, persisted marks, data-driven counters, immediate subscription updates, A2/B1/B1+ prompt source, completion persistence, recording start/stop/playable Blob URL/delete, permission denial, and unsupported API fallback. Run `npm test`, `npm run validate:content`, `npm run build`, and `npm run verify:production` before handoff.
+- Next phase: Grammar + Reviews + Full Progress Integration. AI may later propose a genuine-use event, but the learner must confirm it through `recordVocabularyUse`; recording or prompt completion must never increment word uses automatically.

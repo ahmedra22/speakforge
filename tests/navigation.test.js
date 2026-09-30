@@ -9,7 +9,7 @@ test('home presents available and planned catalog data', async () => {
 });
 
 test('one level renderer resolves A2, B1, B1+, and planned levels', async () => {
-  for (const [url, title] of [['/learn/a2', 'Read to Speak A2'], ['/learn/b1-core', 'Read to Speak B1'], ['/learn/b1plus-bridge', 'Read to Speak B1+']]) {
+  for (const [url, title] of [['/learn/a2', 'Speak Forge A2'], ['/learn/b1-core', 'Speak Forge B1'], ['/learn/b1plus-bridge', 'Speak Forge B1+']]) {
     const html = await renderPath(url);
     assert.ok(html.includes(title));
     assert.ok(html.includes('Explore the units'));

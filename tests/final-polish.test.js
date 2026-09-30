@@ -31,3 +31,20 @@ test('print stylesheet keeps locked passage content hidden and removes applicati
   assert.match(css, /\.passage-locked:not\(\[hidden\]\)/);
   assert.match(css, /\.unit-player-page \[hidden\]\{display:none!important\}/);
 });
+
+test('catalog consistently brands available and planned books without changing content availability', async () => {
+  const home = await renderPath('/');
+  for (const title of ['Speak Forge A2', 'Speak Forge B1', 'Speak Forge B1+', 'Speak Forge B2', 'Speak Forge B2+']) assert.ok(home.includes(title), `home missing ${title}`);
+  for (const [route, title] of [['/learn/a2', 'Speak Forge A2'], ['/learn/b1', 'Speak Forge B1'], ['/learn/b1-plus', 'Speak Forge B1+']]) assert.ok((await renderPath(route)).includes(title));
+  for (const route of ['/learn/b2', '/learn/b2-plus', '/learn/c1']) {
+    const html = await renderPath(route);
+    assert.ok(html.includes('no units available yet'));
+  }
+});
+
+test('annotated unit list background colors are scoped by level container', async () => {
+  const css = await readFile(new URL('../public/styles.css', import.meta.url), 'utf8');
+  assert.match(css, /\.page-container\[data-level-id="a2"\] #units \.unit-section\{background:#dedede\}/);
+  assert.match(css, /\.page-container\[data-level-id="b1"\] #units \.book-unit-group\{background:#ededed\}/);
+  assert.match(css, /\.page-container\[data-level-id="b1-plus"\] #units \.book-unit-group\{background:#e8e8e8\}/);
+});

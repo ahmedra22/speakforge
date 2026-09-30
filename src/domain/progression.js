@@ -44,12 +44,13 @@ function hasActivity(item, store) {
   return Boolean(store?.getGrammarState?.(unit.id)?.completed);
 }
 
-export function deriveUnitCompletion(unit, progressStore) {
+export function deriveUnitCompletion(unit, progressStore, { requireAiPractice = false } = {}) {
   const listening = progressStore?.get?.(unit.id) ?? { passageUnlocked: false };
   const mastered = progressStore?.getWordTrackingSummary?.(unit.id, unit.vocabulary ?? []) ?? { mastered: 0, total: (unit.vocabulary ?? []).length };
   const speaking = progressStore?.getSpeakingSummary?.(unit.id, unit.speakingPrompts ?? []) ?? { completed: 0, total: (unit.speakingPrompts ?? []).length };
   const grammarCompleted = !unit.grammar || !unit.grammar.practiceTask || Boolean(progressStore?.getGrammarState?.(unit.id)?.completed);
-  const conditions = { passageUnlocked: Boolean(listening.passageUnlocked), vocabularyMastered: mastered.mastered === mastered.total, speakingCompleted: speaking.completed === speaking.total, grammarCompleted };
+  const aiPracticeCompleted = !requireAiPractice || Boolean(progressStore?.getAiPracticeState?.(unit.id)?.completed);
+  const conditions = { passageUnlocked: Boolean(listening.passageUnlocked), vocabularyMastered: mastered.mastered === mastered.total, speakingCompleted: speaking.completed === speaking.total, grammarCompleted, aiPracticeCompleted };
   return { completed: Object.values(conditions).every(Boolean), conditions, masteredVocabulary: mastered.mastered, totalVocabulary: mastered.total, completedSpeaking: speaking.completed, totalSpeaking: speaking.total };
 }
 
@@ -80,7 +81,7 @@ export function deriveLevelProgress(booksProgress) {
   return { completedUnits, totalUnits, percent: totalUnits ? Math.round(completedUnits / totalUnits * 100) : 0, books: booksProgress };
 }
 export function completeUnit(unit, progressStore, sequence, options = {}) {
-  const completion = deriveUnitCompletion(unit, progressStore);
+  const completion = deriveUnitCompletion(unit, progressStore, options);
   const index = sequence.findIndex(item => item.id === unit.id);
   const status = index < 0 ? 'locked' : getItemStatus(sequence[index], { sequence, progressStore, ...options, index });
   if (!completion.completed || status === 'locked') return { completed: false, completion, status };

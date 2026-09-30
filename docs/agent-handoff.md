@@ -218,7 +218,9 @@ This phase audited the available resources, inspected the B1 reference UX, recor
 - Browser automation was attempted but the computer-use runtime exited unexpectedly before surface initialization. No visual, audible, or device-level browser verification is claimed.
 - Checks: `npm test` (28 tests), `npm run validate:content` (34 units, 45 existing repeated-vocabulary warnings), `npm run build`, and `npm run verify:production` all passed. Production smoke checks confirm A2/B1/B1+ unit pages render normalized vocabulary and TTS modules are served.
 - Next phase: Word Tracking + Speaking Prompts + Optional Recording. Word Tracking should supply a real `progress.get(vocabularyItemId)` status interface; do not infer mastery from speech playback.
-## Phase 7 Word Tracking and Speaking`n`n- Implementation commit: `acd2e49` (`Implement word tracking and speaking prompts`).
+## Phase 7 Word Tracking and Speaking
+
+- Implementation commit: cd2e49 (Implement word tracking and speaking prompts).
 
 - Branch: `feature/word-tracking-speaking`. Extended `src/features/listening/listening-progress.js` in place; all per-unit progress uses the existing `speakforge.listening.v1.<scope>` storage object and preserves listen count/unlock. There is no second persistence system.
 - `getVocabularyState(unitId,wordId)`, `recordVocabularyUse(unitId,wordId)`, and `getWordTrackingSummary(unitId,items)` model 0–5 uses; uses are capped at five and `learned`/`mastered` derives only from reaching five. Store subscription refreshes marks, summary, and All/Not Started/In Progress/Mastered filters immediately. Prompt completion uses `getSpeakingState`, `setSpeakingCompleted`, and `getSpeakingSummary` in the same store.

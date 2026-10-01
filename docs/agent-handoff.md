@@ -541,6 +541,6 @@ Explicit runtime asset payload: 58,849,818 bytes (about 56.1 MiB) uncompressed: 
 ### Git
 
 - Branch: feature/vercel-deployment.
-- Implementation commit: pending initial commit.
-- Handoff commit: pending.
-- Clean working tree: pending final check.
+- Implementation commit: 9df563185203f37708009675a59a65929b6cab21 — Add Vercel Node server deployment support.
+- This handoff update is a documentation-only follow-up commit.
+- Clean working tree: verified after the handoff commit.

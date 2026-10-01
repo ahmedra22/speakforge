@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-10-01
 **Project owner/creator:** Ahmed Ramadan  
-**Current phase:** Responsive Device Support is complete on `codex/responsive-device-support`; see the final handoff section for viewport results and browser/platform limits.
+**Current phase:** Vercel Function adapter repair is complete on `feature/vercel-function-adapter`; see the final handoff section for deployment configuration and verification results.
 
 ## Project overview
 
@@ -494,53 +494,40 @@ Parallel content work should use unique IDs and per-book resource directories. C
 
 ### Verification
 
-- Temporary future-book/future-level fixture: pending final rerun.
-- Full test suite: pending final rerun.
-- Content validation: pending final rerun.
-- Production build: pending final rerun.
-- Production smoke test: pending final rerun.
-- Regression coverage: existing tests cover audio, listen tracking and passage unlock, vocabulary/TTS, Word Tracking, speaking, navigation, and content loading; full results will be recorded after rerun.
+- Temporary future-book/future-level fixture: passed during the final 66-test suite; temporary files were cleaned up by the test.
+- Full test suite: passed, 66 tests, 0 failures (2026-10-01).
+- Content validation: passed for 34 units in 3 available content sources (6 catalog books total); 45 repeated-vocabulary warnings remain informational.
+- Production build: passed; files written to `dist/`.
+- Production smoke test: passed; A2/B1/B1+ pages, APIs, reviews/progress, audio GET/HEAD/ranges, and graceful unconfigured AI behavior were verified.
+- Regression coverage: existing tests cover audio, listen tracking and passage unlock, vocabulary/TTS, Word Tracking, speaking, navigation, and content loading; full results are recorded below.
 
 ### Scope limits
 
 No real course content or novel content was added. Current concrete content item types are units and generated reviews. Novel-length material will need a generic content-item/route extension when specified; this task does not claim that a novel reader already exists. No existing learning feature was intentionally redesigned.
-## Vercel Deployment Adapter — 2026-10-01
+## Vercel Function Adapter Repair — 2026-10-01
 
 ### Changes
 
-- Branch: feature/vercel-deployment.
-- Added root server.ts, the Node server entry Vercel detects. It sets SPEAKFORGE_ROOT from its entry location, dynamically imports the existing createAppServer(), and starts the captured HTTP server on the platform-provided port.
-- Added vercel.json using the Other framework preset, npm run build, outputDirectory: null, and explicit includeFiles for src/**, public/**, resources/structured/**, resources/covers/**, and resources/audio/**. Vercel is not configured to serve dist/ as static output.
-- src/app/server.js and src/content/repository/content-loader.js honor SPEAKFORGE_ROOT and retain module-relative fallbacks. scripts/serve.js and npm start remain unchanged.
-- package.json selects Node 24.x; verification used local Node 24.14.1.
-- Corrected scripts/validate-content.js to report available content sources and total catalog books accurately.
+- Added `api/index.ts`, a native Vercel Node Function adapter. It sets `SPEAKFORGE_ROOT` from `process.cwd()` before importing the existing `createAppServer()`, then forwards the original Node request and response objects into that server. It does not alter application routing or endpoint logic.
+- Updated `vercel.json` to select the Other preset, configure the `api/index.ts` function, set `functions.includeFiles` to the string glob `{resources/**,src/**,public/**}`, and rewrite `/(.*)` to `/api`. `buildCommand` and `outputDirectory` are explicitly null. The generated Vercel route manifest contains the catch-all function rewrite.
+- Kept the root `server.ts`, `scripts/serve.js`, and local `npm start` behavior unchanged. Audio byte ranges and HEAD responses still use the existing `src/app/server.js` implementation. AI Practice routes retain their existing behavior and `ai_not_configured` response.
+- Added `tests/vercel-adapter.test.js` to exercise home, learning-sequence API, audio range, and HEAD requests through the adapter.
+- Updated the Vercel deployment sections in `README.md` and `docs/architecture.md`.
 
-### Runtime files and size
+### Verification
 
-Explicit runtime asset payload: 58,849,818 bytes (about 56.1 MiB) uncompressed: source 146,701 bytes, public 47,732, structured content 181,012, covers 19,368,775, and MP3s 39,105,598. The largest MP3 is 1,512,529 bytes. There are no third-party runtime dependencies. This selected payload is below the standard 250 MB uncompressed Node Function bundle limit. Vercel's final traced package size was not measured because the Vercel CLI is not installed. PDFs (5,465,798 bytes), tests, dist, and development-only paths are not explicitly included.
+- `npm test`: passed, **66 tests**, 0 failures. This includes the adapter test and existing navigation, audio, listen tracking, passage unlock, vocabulary/TTS, Word Tracking, speaking, grammar, reviews/progress, AI Practice, and content-loading coverage.
+- `npm run validate:content`: passed, **34 units** in 3 available content sources; 45 repeated-vocabulary warnings remain informational.
+- `npm run build`: passed; local production files were written to `dist/`.
+- `npm run verify:production`: passed. The smoke test covered complete A2/B1/B1+ unit pages, browser modules, learning order, passage/review/progress APIs, MP3 GET/HEAD/ranges, mapped covers, and graceful unconfigured AI behavior.
+- `npx --yes vercel@latest build`: passed with Vercel CLI **62.1.0** on Node **24.14.1**. Output created `.vercel/output/functions/api/index.func` with handler `api/index.js` and Node 24 runtime. Its `.vc-config.json` `filePathMap` includes `resources/structured/a2/units.a2.json`, A2 audio, A2 cover, and public assets; source modules were packaged under `src/`. `.vercel/output/config.json` contains the catch-all rewrite to `/api`.
+- `npx --yes vercel@latest deploy --dry --format=json`: passed without deploying. The deployment manifest contained 257 files (128,799,318 bytes) and listed `api/index.ts`, the structured unit JSON, the A2 MP3, and the A2 cover.
+- `npx --yes vercel@latest dev --listen 4174`: local Vercel runtime check passed. `/`, `/learn/a2`, and the learning-sequence API returned 200; an MP3 byte range returned 206 with the requested range; HEAD returned 206 with the same headers and no body.
 
-### Verification results
+### Limits and Git
 
-- npm test: passed, 65 tests, 0 failures.
-- npm run validate:content: passed, 34 units in 3 available content sources (6 catalog books total); 45 repeated-vocabulary warnings remain informational.
-- npm run build: passed; production files were written to dist/.
-- npm run verify:production: passed. It verified complete A2/B1/B1+ unit pages, browser module routes, audio GET/HEAD/range delivery, reviews/progress, passage API, covers, and graceful unconfigured AI state.
-- Vercel entry local HTTP check (node server.ts): passed from both the repository and a different working directory. Home, A2 Unit 1, and B1 level returned 200; B1+ audio returned 206 for a 1,024-byte range; learning-sequence API returned 13 sequence items; passage API returned 4 paragraphs; cover returned 200; MP3 range request returned 206 with bytes 0-1023/640128 and 1,024 bytes; AI Practice reported not_configured.
-- Local npm start smoke: passed. Home and B1+ Unit 1 returned 200.
-- vercel dev: not run; no Vercel executable was found on PATH.
-- No Vercel deployment or deployed browser check was performed.
-
-### Runtime behavior and limitations
-
-- The Vercel-detected server entry and local scripts/serve.js both reuse createAppServer(). HTML, /api/ routes, /assets/ covers, /audio/ MP3s, browser modules, and byte ranges remain in the existing server.
-- Runtime data files are explicitly included; Vercel project configuration does not name dist as an output directory. The build still produces dist for local production verification.
-- AI credentials remain server-side Vercel environment variables. Without them the existing unconfigured response remains.
-- AI sessions are held in a process-local Map and can be lost across cold starts or separate server instances. Browser progress remains browser-local.
-- The actual Vercel-generated bundle size, Vercel CLI behavior, and deployed request handling still require confirmation in a Vercel build/deployment.
-
-### Git
-
-- Branch: feature/vercel-deployment.
-- Implementation commit: 9df563185203f37708009675a59a65929b6cab21 — Add Vercel Node server deployment support.
-- This handoff update is a documentation-only follow-up commit.
-- Clean working tree: verified after the handoff commit.
+- No production deployment was created, so no live production URL or browser check is claimed.
+- AI sessions remain process-local and progress remains browser-local, as before this deployment fix.
+- Branch: `feature/vercel-function-adapter`.
+- Implementation commit: `fc8bc2a7ddef6cd94c421ffb51c4548f16e9c623` — Add Vercel function adapter for runtime assets.
+- Local workspace also had pre-existing changes to `.gitignore` and an untracked `package-lock.json`; neither is part of this fix or its commits.

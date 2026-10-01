@@ -44,16 +44,10 @@ The same server-rendered pages and feature controllers serve all device sizes. R
 
 Run `npm test`, `npm run validate:content`, `npm run build`, and `npm run verify:production`. The final polish handoff records exact results. Browser visual QA and Lighthouse results must only be reported when those tools run successfully. No live AI provider response is claimed unless real server configuration is available and used.
 
-## Vercel server deployment
+## Vercel Function deployment
 
-Vercel recognizes the root server.ts Node server entry. It sets SPEAKFORGE_ROOT from the entrypoint location and then dynamically imports createAppServer() from src/app/server.js, ensuring filesystem roots are established before the existing server and content-loader modules initialize. The adapter calls listen(process.env.PORT ?? 3000) as required by the Vercel Node server runtime. scripts/serve.js and the local npm start flow are unchanged.
+Vercel routes the application through the native Node Function at `api/index.ts`. The adapter establishes `SPEAKFORGE_ROOT` before dynamically importing `createAppServer()` and forwards the original `IncomingMessage` and `ServerResponse` into that server. Application routing and response behavior remain centralized in `src/app/server.js`, including audio byte ranges and HEAD requests. The existing root `server.ts` remains available, and local `npm start` is unchanged.
 
-The root vercel.json selects the Other framework preset, runs the existing npm run build, sets outputDirectory to null, and configures includeFiles for the server's runtime reads: src/**, public/**, resources/structured/**, resources/covers/**, and resources/audio/**. It does not set dist/ as a static output root; dist/ is still produced by the existing build script for local production verification. Resource PDFs, tests, and development-only paths are excluded from the explicit runtime file list.
+`vercel.json` matches the `api/index.ts` function, uses a single string glob `{resources/**,src/**,public/**}` for runtime files, and rewrites `/(.*)` to `/api`. These included paths cover structured content, audio, covers, source modules loaded by the server, and public assets. No framework conversion or separate application router is involved.
 
-The explicit runtime asset payload measured 58,849,818 bytes (about 56.1 MiB) uncompressed: 39,105,598 bytes of MP3s, 19,368,775 bytes of covers, 181,012 bytes of structured content, 146,701 bytes of source, and 47,732 bytes of public assets. Largest MP3: 1,512,529 bytes. This is below the standard 250 MB uncompressed Node Function bundle limit; the actual final Vercel-traced package must still be confirmed from the Vercel build output. No Vercel CLI was present, so vercel dev was not run.
-
-Node is pinned to 24.x in package.json, the currently supported default on Vercel and the local runtime used in this environment. Local execution still uses npm start → scripts/serve.js → createAppServer(). On Vercel, the detected server entry starts the same server, and its existing routes continue to handle HTML, /api/..., /assets/..., /audio/..., and browser modules. Audio range handling remains in src/app/server.js.
-
-AI credentials must be configured as server-side Vercel environment variables. With no provider settings, the current unconfigured response remains. AI sessions use an in-memory Map and may not survive server cold starts or route across multiple instances consistently; shared durable session storage remains a deployment limitation. Browser progress is local.
-
-See README.md — Vercel deployment and the Vercel section in this handoff for checks and limitations.
+Verify the bundle with `npx vercel@latest build` and inspect `.vercel/output/functions/api/index.func/.vc-config.json` and verify its `filePathMap` includes structured content, audio, and covers. The regular local production checks remain `npm run build` and `npm run verify:production`. AI provider configuration stays server-side; missing credentials retain the existing `ai_not_configured` response. AI sessions remain process-local and learner progress remains browser-local.

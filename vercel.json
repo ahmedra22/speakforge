@@ -1,5 +1,14 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "node",
-  "buildCommand": null
+  "framework": null,
+  "buildCommand": null,
+  "outputDirectory": null,
+  "functions": {
+    "api/index.ts": {
+      "includeFiles": "{resources/**,src/**,public/**}"
+    }
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api" }
+  ]
 }

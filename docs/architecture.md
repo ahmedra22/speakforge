@@ -43,3 +43,17 @@ The same server-rendered pages and feature controllers serve all device sizes. R
 ## Verification and limits
 
 Run `npm test`, `npm run validate:content`, `npm run build`, and `npm run verify:production`. The final polish handoff records exact results. Browser visual QA and Lighthouse results must only be reported when those tools run successfully. No live AI provider response is claimed unless real server configuration is available and used.
+
+## Vercel server deployment
+
+Vercel recognizes the root server.ts Node server entry. It sets SPEAKFORGE_ROOT from the entrypoint location and then dynamically imports createAppServer() from src/app/server.js, ensuring filesystem roots are established before the existing server and content-loader modules initialize. The adapter calls listen(process.env.PORT ?? 3000) as required by the Vercel Node server runtime. scripts/serve.js and the local npm start flow are unchanged.
+
+The root vercel.json selects the Other framework preset, runs the existing npm run build, sets outputDirectory to null, and configures includeFiles for the server's runtime reads: src/**, public/**, resources/structured/**, resources/covers/**, and resources/audio/**. It does not set dist/ as a static output root; dist/ is still produced by the existing build script for local production verification. Resource PDFs, tests, and development-only paths are excluded from the explicit runtime file list.
+
+The explicit runtime asset payload measured 58,849,818 bytes (about 56.1 MiB) uncompressed: 39,105,598 bytes of MP3s, 19,368,775 bytes of covers, 181,012 bytes of structured content, 146,701 bytes of source, and 47,732 bytes of public assets. Largest MP3: 1,512,529 bytes. This is below the standard 250 MB uncompressed Node Function bundle limit; the actual final Vercel-traced package must still be confirmed from the Vercel build output. No Vercel CLI was present, so vercel dev was not run.
+
+Node is pinned to 24.x in package.json, the currently supported default on Vercel and the local runtime used in this environment. Local execution still uses npm start → scripts/serve.js → createAppServer(). On Vercel, the detected server entry starts the same server, and its existing routes continue to handle HTML, /api/..., /assets/..., /audio/..., and browser modules. Audio range handling remains in src/app/server.js.
+
+AI credentials must be configured as server-side Vercel environment variables. With no provider settings, the current unconfigured response remains. AI sessions use an in-memory Map and may not survive server cold starts or route across multiple instances consistently; shared durable session storage remains a deployment limitation. Browser progress is local.
+
+See README.md — Vercel deployment and the Vercel section in this handoff for checks and limitations.

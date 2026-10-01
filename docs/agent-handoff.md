@@ -504,3 +504,43 @@ Parallel content work should use unique IDs and per-book resource directories. C
 ### Scope limits
 
 No real course content or novel content was added. Current concrete content item types are units and generated reviews. Novel-length material will need a generic content-item/route extension when specified; this task does not claim that a novel reader already exists. No existing learning feature was intentionally redesigned.
+## Vercel Deployment Adapter — 2026-10-01
+
+### Changes
+
+- Branch: feature/vercel-deployment.
+- Added root server.ts, the Node server entry Vercel detects. It sets SPEAKFORGE_ROOT from its entry location, dynamically imports the existing createAppServer(), and starts the captured HTTP server on the platform-provided port.
+- Added vercel.json using the Other framework preset, npm run build, outputDirectory: null, and explicit includeFiles for src/**, public/**, resources/structured/**, resources/covers/**, and resources/audio/**. Vercel is not configured to serve dist/ as static output.
+- src/app/server.js and src/content/repository/content-loader.js honor SPEAKFORGE_ROOT and retain module-relative fallbacks. scripts/serve.js and npm start remain unchanged.
+- package.json selects Node 24.x; verification used local Node 24.14.1.
+- Corrected scripts/validate-content.js to report available content sources and total catalog books accurately.
+
+### Runtime files and size
+
+Explicit runtime asset payload: 58,849,818 bytes (about 56.1 MiB) uncompressed: source 146,701 bytes, public 47,732, structured content 181,012, covers 19,368,775, and MP3s 39,105,598. The largest MP3 is 1,512,529 bytes. There are no third-party runtime dependencies. This selected payload is below the standard 250 MB uncompressed Node Function bundle limit. Vercel's final traced package size was not measured because the Vercel CLI is not installed. PDFs (5,465,798 bytes), tests, dist, and development-only paths are not explicitly included.
+
+### Verification results
+
+- npm test: passed, 65 tests, 0 failures.
+- npm run validate:content: passed, 34 units in 3 available content sources (6 catalog books total); 45 repeated-vocabulary warnings remain informational.
+- npm run build: passed; production files were written to dist/.
+- npm run verify:production: passed. It verified complete A2/B1/B1+ unit pages, browser module routes, audio GET/HEAD/range delivery, reviews/progress, passage API, covers, and graceful unconfigured AI state.
+- Vercel entry local HTTP check (node server.ts): passed from both the repository and a different working directory. Home, A2 Unit 1, and B1 level returned 200; B1+ audio returned 206 for a 1,024-byte range; learning-sequence API returned 13 sequence items; passage API returned 4 paragraphs; cover returned 200; MP3 range request returned 206 with bytes 0-1023/640128 and 1,024 bytes; AI Practice reported not_configured.
+- Local npm start smoke: passed. Home and B1+ Unit 1 returned 200.
+- vercel dev: not run; no Vercel executable was found on PATH.
+- No Vercel deployment or deployed browser check was performed.
+
+### Runtime behavior and limitations
+
+- The Vercel-detected server entry and local scripts/serve.js both reuse createAppServer(). HTML, /api/ routes, /assets/ covers, /audio/ MP3s, browser modules, and byte ranges remain in the existing server.
+- Runtime data files are explicitly included; Vercel project configuration does not name dist as an output directory. The build still produces dist for local production verification.
+- AI credentials remain server-side Vercel environment variables. Without them the existing unconfigured response remains.
+- AI sessions are held in a process-local Map and can be lost across cold starts or separate server instances. Browser progress remains browser-local.
+- The actual Vercel-generated bundle size, Vercel CLI behavior, and deployed request handling still require confirmation in a Vercel build/deployment.
+
+### Git
+
+- Branch: feature/vercel-deployment.
+- Implementation commit: pending initial commit.
+- Handoff commit: pending.
+- Clean working tree: pending final check.

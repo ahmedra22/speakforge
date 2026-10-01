@@ -5,7 +5,9 @@ import { levels as defaultLevels, books as defaultBooks, sourceSets as defaultSo
 import { extractJsonObjects } from '../normalize/parse-source.js';
 import { normalizeUnit } from '../normalize/normalize-unit.js';
 
-const defaultRoot = fileURLToPath(new URL('../../../', import.meta.url));
+const defaultRoot = process.env.SPEAKFORGE_ROOT
+  ? path.resolve(process.env.SPEAKFORGE_ROOT)
+  : fileURLToPath(new URL('../../../', import.meta.url));
 const resolveFrom = (root, relativePath) => path.join(root, relativePath);
 const audioFor = (set, number) => set.audioPathTemplate?.replaceAll('{number}', String(number)) ?? null;
 

@@ -8,7 +8,9 @@ import { buildLearningSequence, createReview } from "../domain/progression.js";
 import { createAiProvider, AiConfigurationError, AiProviderError } from "../infrastructure/ai/provider.js";
 import { createAiPracticeSessionService } from "../domain/ai-practice/session.js";
 
-const root = fileURLToPath(new URL("../../", import.meta.url));
+const root = process.env.SPEAKFORGE_ROOT
+  ? path.resolve(process.env.SPEAKFORGE_ROOT)
+  : fileURLToPath(new URL("../../", import.meta.url));
 const publicDir = path.join(root, "public");
 const coverDir = path.join(root, "resources", "covers");
 const audioDir = path.join(root, "resources", "audio");

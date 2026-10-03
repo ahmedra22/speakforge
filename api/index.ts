@@ -10,9 +10,21 @@ process.env.SPEAKFORGE_ROOT = process.cwd();
 const { createAppServer } = await import("../src/app/server.js");
 const appServer = createAppServer();
 
+function restoreOriginalPath(request) {
+  const incoming = new URL(request.url ?? "/", "http://vercel.internal");
+  const routedPath = incoming.searchParams.get("path");
+  if (routedPath === null) return;
+
+  incoming.searchParams.delete("path");
+  const query = incoming.searchParams.toString();
+  request.url = routedPath + (query ? `?${query}` : "");
+}
+
 export function handler(request, response) {
-  // Forward the original Node request/response objects so methods, headers,
-  // request bodies, streaming, byte ranges, and HEAD semantics stay intact.
+  // Vercel rewrites every public request to /api and carries the original
+  // pathname in the "path" query parameter. Restore it before forwarding
+  // to the existing application server.
+  restoreOriginalPath(request);
   appServer.emit("request", request, response);
 }
 

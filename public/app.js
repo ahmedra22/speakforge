@@ -17,11 +17,17 @@ const authButton=document.querySelector("[data-auth-button]"),authStatus=documen
 function renderAuthState({status,message,user}){if(!authButton||!authStatus)return;authButton.textContent=user?"Sign out":"Continue with Google";authButton.hidden=status==="unconfigured";authButton.disabled=status==="loading"||status==="syncing";authStatus.textContent=message||(status==="loading"?"Checking sign-in…":status==="syncing"?"Syncing your progress…":user?`Signed in as ${user.email||"Google account"}`:status==="unconfigured"?"Progress saved on this device":"Progress saved on this device");}
 let progressSync;
 renderAuthState({status:"loading"});
+document.querySelector("[data-auth-control]")?.addEventListener("submit",async event=>{
+  if(!progressSync?.getUserId())return;
+  event.preventDefault();
+  authButton.disabled=true;
+  try{await progressSync.signOut();}
+  catch(error){renderAuthState({status:"error",message:error.message});authButton.disabled=false;}
+});
 async function initializeCloudProgress(){
   const cloudAuthConfig=await fetch("/api/config").then(r=>r.ok?r.json():{}).catch(()=>({}));
   const auth=createSupabaseAuth({url:cloudAuthConfig.supabaseUrl,anonKey:cloudAuthConfig.supabaseAnonKey});
   progressSync=createProgressSync({store:progressStore,auth,onState:renderAuthState});
-  authButton?.addEventListener("click",async()=>{authButton.disabled=true;try{if(progressSync.getUserId())await progressSync.signOut();else await progressSync.signIn();}catch(error){renderAuthState({status:"error",message:error.message});authButton.disabled=false;}});
   await progressSync.start();
 }
 void initializeCloudProgress().catch(()=>renderAuthState({status:"error",message:"Cloud progress is unavailable. Local progress remains saved."}));

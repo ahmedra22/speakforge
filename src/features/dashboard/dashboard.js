@@ -35,13 +35,10 @@ function renderDashboard(root, data, progressStore) {
   const fallback = results.find(({result}) => result.nextItem)?.result.nextItem ? results.find(({result}) => result.nextItem) : null;
   const continueBook = savedItem ? savedBook.book : fallback?.book;
   const continueItem = savedItem ?? fallback?.result.nextItem ?? null;
-  const user = progressStore.getUser?.() ?? null;
-  const userName = user?.email ? `<p class="dashboard-account">Signed in as <strong>${escapeHtml(user.email)}</strong></p>` : '';
-
   root.querySelector('[data-dashboard-loading]')?.remove();
   const content = root.querySelector('[data-dashboard-content]');
   if (!content) return;
-  content.innerHTML = `${userName}${renderOverall({completed,total})}${renderContinue(continueBook, continueItem, continueItem ? itemLabel(continueItem) : 'Start your first unit')}${results.length ? `<section class="dashboard-section"><div class="section-heading"><div><p class="eyebrow">Your books</p><h2>Learning progress</h2></div><p class="muted">See what is complete and what comes next.</p></div><div class="dashboard-book-grid">${results.map(({book,result}) => renderBook(book,result)).join('')}</div></section>` : '<section class="dashboard-empty"><h2>No available books yet.</h2><p>New learning content will appear here as it becomes available.</p></section>'}`;
+  content.innerHTML = `${renderOverall({completed,total})}${renderContinue(continueBook, continueItem, continueItem ? itemLabel(continueItem) : 'Start your first unit')}${results.length ? `<section class="dashboard-section"><div class="section-heading"><div><p class="eyebrow">Your books</p><h2>Learning progress</h2></div><p class="muted">See what is complete and what comes next.</p></div><div class="dashboard-book-grid">${results.map(({book,result}) => renderBook(book,result)).join('')}</div></section>` : '<section class="dashboard-empty"><h2>No available books yet.</h2><p>New learning content will appear here as it becomes available.</p></section>'}`;
   content.hidden=false;
 }
 

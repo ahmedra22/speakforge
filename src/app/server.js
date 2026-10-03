@@ -183,7 +183,7 @@ export function createAppServer({ aiPracticeService } = {}) {
             cover: book.cover?.path ?? level?.cover?.path ?? null,
             reviewFrequency: book.reviewFrequency ?? 3,
             units: units.map(unit => ({ id: unit.id, number: unit.number, title: unit.title })),
-            sequence: sequence.map(item => item.kind === "unit" ? { kind: "unit", id: item.id, title: item.unit.title, number: item.unit.number } : { kind: "review", id: item.id, title: item.title, startUnit: item.startUnit, endUnit: item.endUnit }),
+            sequence: sequence.map(item => item.kind === "unit" ? { kind: "unit", id: item.id, title: item.unit.title, number: item.unit.number } : { kind: "review", id: item.id, title: item.title, startUnit: item.startUnit, endUnit: item.endUnit, sourceUnits: item.sourceUnits }),
           });
         }
         return sendJson(response, 200, { books: results });

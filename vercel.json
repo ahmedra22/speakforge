@@ -1,4 +1,4 @@
-{
+{"
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "buildCommand": null,
@@ -9,6 +9,6 @@
     }
   },
   "rewrites": [
-    { "source": "/(.*)", "destination": "/api" }
+    { "source": "/(.*)", "destination": "/api/$1" }
   ]
 }

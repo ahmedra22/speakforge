@@ -171,7 +171,7 @@ export function createAppServer({ aiPracticeService } = {}) {
         const availableBooks = allBooks.filter(book => book.status === "available");
         const results = [];
         for (const book of availableBooks) {
-          const units = await contentLoader.listUnits(book.id);
+          const units = await contentLoader.listUnitSummaries(book.id);
           const sequence = buildLearningSequence(book.id, units, { reviewFrequency: book.reviewFrequency ?? 3 });
           const level = allLevels.find(item => item.id === book.levelId);
           results.push({

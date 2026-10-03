@@ -31,6 +31,7 @@ const publicModules = new Map([
   ["/domain/audio-timing.js", source("domain", "audio-timing.js")],
   ["/ai-practice-panel.js", source("features", "ai-practice", "ai-practice-panel.js")],
   ["/progress-sync.js", source("features", "progress", "progress-sync.js")],
+  ["/dashboard.js", source("features", "dashboard", "dashboard.js")],
 ]);
 
 function loadLocalEnvironment() {
@@ -145,7 +146,7 @@ export function createAppServer({ aiPracticeService } = {}) {
         if (requestedNext) {
           try {
             const candidate = new URL(requestedNext, origin);
-            if (candidate.origin === origin && candidate.pathname.startsWith("/learn/")) redirectTo = `${origin}${candidate.pathname}${candidate.search}`;
+            if (candidate.origin === origin && (candidate.pathname.startsWith("/learn/") || candidate.pathname === "/my-learning")) redirectTo = `${origin}${candidate.pathname}${candidate.search}`;
           } catch {}
         } else {
           const referer = request.headers.referer;
@@ -164,6 +165,28 @@ export function createAppServer({ aiPracticeService } = {}) {
         response.writeHead(302, { location: authorize.toString(), "cache-control": "no-store" });
         response.end();
         return;
+      }
+      if (url.pathname === "/api/my-learning/context") {
+        const [allLevels, allBooks] = await Promise.all([contentLoader.listLevels(), contentLoader.listBooks()]);
+        const availableBooks = allBooks.filter(book => book.status === "available");
+        const results = [];
+        for (const book of availableBooks) {
+          const units = await contentLoader.listUnits(book.id);
+          const sequence = buildLearningSequence(book.id, units, { reviewFrequency: book.reviewFrequency ?? 3 });
+          const level = allLevels.find(item => item.id === book.levelId);
+          results.push({
+            id: book.id,
+            routeSlug: book.routeSlug,
+            levelId: book.levelId,
+            levelLabel: level?.label ?? book.levelId,
+            title: book.title ?? level?.label ?? book.id,
+            cover: book.cover?.path ?? level?.cover?.path ?? null,
+            reviewFrequency: book.reviewFrequency ?? 3,
+            units: units.map(unit => ({ id: unit.id, number: unit.number, title: unit.title })),
+            sequence: sequence.map(item => item.kind === "unit" ? { kind: "unit", id: item.id, title: item.unit.title, number: item.unit.number } : { kind: "review", id: item.id, title: item.title, startUnit: item.startUnit, endUnit: item.endUnit }),
+          });
+        }
+        return sendJson(response, 200, { books: results });
       }
       if (url.pathname === "/api/config") return sendJson(response, 200, { supabaseUrl: process.env.SUPABASE_URL ?? "", supabaseAnonKey: process.env.SUPABASE_ANON_KEY ?? "" });
       if (url.pathname === "/styles.css") return sendFile(response, path.join(publicDir, "styles.css"), "text/css; charset=utf-8");

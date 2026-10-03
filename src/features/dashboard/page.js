@@ -1,4 +1,5 @@
 import { layout } from '../../components/layout.js';
+import { buildLearningSequence } from '../../domain/progression.js';
 
 const safeJson = value => JSON.stringify(value).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026');
 
@@ -8,7 +9,7 @@ export async function myLearningPage(loader){
   const dashboardBooks = [];
   for (const book of availableBooks) {
     const units = await loader.listUnitSummaries(book.id);
-    const sequence = (await import('../../domain/progression.js')).buildLearningSequence(book.id, units, { reviewFrequency: book.reviewFrequency ?? 3 });
+    const sequence = buildLearningSequence(book.id, units, { reviewFrequency: book.reviewFrequency ?? 3 });
     const level = levels.find(item => item.id === book.levelId);
     dashboardBooks.push({
       id: book.id,

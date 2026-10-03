@@ -25,7 +25,7 @@ The supplied structured content contains Speak Forge A2 (10 units), Speak Forge 
 
 ## Content and progress
 
-Original learning materials in `resources/` are the source of truth. The content loader normalizes the supplied JSON and resolves explicit book, cover, and audio manifests. Passage text is fetched only after three qualifying listens; missing timing data keeps Follow Along synchronization unavailable. Unit, review, resume, and Word Tracking progress use versioned browser-local storage. Audio preferences use their own local preference store. Progress does not sync between devices.
+Original learning materials in `resources/` are the source of truth. The content loader normalizes the supplied JSON and resolves explicit book, cover, and audio manifests. Passage text is fetched only after three qualifying listens; missing timing data keeps Follow Along synchronization unavailable. Unit, review, resume, and Word Tracking progress use versioned browser-local storage. When Supabase is configured and a learner signs in with Google, the app reconciles progress with a private per-user Supabase row for each unit/review and keeps localStorage as an immediate cache and offline fallback. Audio preferences remain device-local. See the Supabase setup section below.
 
 ## AI Practice configuration
 
@@ -81,4 +81,17 @@ Vercel uses the native Node Function at `api/index.ts`. The handler sets `SPEAKF
 
 `vercel.json` configures `api/index.ts` with the string glob `{resources/**,src/**,public/**}` and rewrites every application path to `/api`. This explicitly packages the structured JSON, audio, covers, application modules, and public assets the server reads at runtime. The existing server continues to handle page and API routes, audio streaming, byte ranges, and HEAD requests.
 
-Run `npx vercel@latest build` and inspect `.vercel/output/functions/api/index.func/.vc-config.json` and its `filePathMap` for the function and runtime files. Vercel deployment remains separate from the local `dist/` production build. AI credentials remain server-side; without configuration, AI Practice keeps its existing `ai_not_configured` behavior. AI sessions are in memory, while learner progress remains browser-local.
+Run `npx vercel@latest build` and inspect `.vercel/output/functions/api/index.func/.vc-config.json` and its `filePathMap` for the function and runtime files. Vercel deployment remains separate from the local `dist/` production build. AI credentials remain server-side; without configuration, AI Practice keeps its existing `ai_not_configured` behavior. AI sessions are in memory, while learner progress is synced through Supabase when configured and remains local-only otherwise.
+
+## Cross-device progress (Supabase)
+
+Cloud progress is optional. Unconfigured local development continues in device-local mode. Copy `.env.example` to `.env` and set `SUPABASE_URL` plus `SUPABASE_ANON_KEY` (the public/publishable key only). The custom server exposes only these two public values at `/api/config`; never add a Supabase service-role key to browser configuration.
+
+1. Create a Supabase project. Apply `supabase/migrations/20261003000000_create_progress.sql` using the Supabase SQL editor or your normal migration workflow. The migration creates `public.progress`, a unique `(user_id, unit_id)` key, JSONB state columns, timestamps, and owner-only RLS for select/insert/update.
+2. In Supabase Authentication, enable Google and enter the Google OAuth web client ID and secret in the provider settings. In Google Cloud, register the Supabase Auth callback URI shown on that provider settings page. Set the authorized JavaScript origin to the local origin (for example `http://localhost:4173`) and the production site origin.
+3. Set the Supabase Auth Site URL to the app origin and allow the local and production origins in its redirect URL list. The app redirects OAuth back to the current app route.
+4. For local use, put `SUPABASE_URL` and the public `SUPABASE_ANON_KEY` in `.env`. For Vercel, configure those same runtime variables in the project environment settings. Do not use `SUPABASE_SERVICE_ROLE_KEY` in this app.
+
+On sign-in, the app reads local state and the authenticated user's rows, then merges monotonically: maximum valid listen count, vocabulary uses capped at five, and completion flags preserved if true on either side. It uploads the reconciled rows using the composite unique key. Each later mutation is saved to localStorage immediately and queued for remote upsert. Failed requests keep local progress and are retried when the browser comes online or on a later mutation/session. The first signed-in account can claim existing guest progress once; account caches remain partitioned, and logout restores the guest cache rather than leaving the prior account's data visible. Device-specific audio preferences and optional microphone recordings are not synced.
+
+Google provider credentials and the project itself require dashboard setup outside the repository. The migration and app configuration are versioned here; OAuth provider settings cannot be created by this codebase alone.

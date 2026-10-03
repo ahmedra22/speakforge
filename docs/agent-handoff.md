@@ -531,3 +531,9 @@ No real course content or novel content was added. Current concrete content item
 - Branch: `feature/vercel-function-adapter`.
 - Implementation commit: `fc8bc2a7ddef6cd94c421ffb51c4548f16e9c623` — Add Vercel function adapter for runtime assets.
 - Local workspace also had pre-existing changes to `.gitignore` and an untracked `package-lock.json`; neither is part of this fix or its commits.
+
+## Persistent progress integration (2026-10-03)
+
+Implemented Supabase Google Auth and cross-device progress persistence without changing learning completion rules. The existing synchronous localStorage progress store remains the UI cache; a separate sync module restores sessions, merges local and user rows monotonically, writes records through owner-authorized PostgREST upserts, partitions caches by account, and falls back to local progress when Supabase is unavailable. Added an owner-only RLS migration and public runtime config endpoint for the custom Node/Vercel architecture.
+
+Focused coverage is in `tests/progress-sync.test.js` (auth restore/sign-out, account isolation, offline behavior, merge/reconciliation, hydration races, unique upsert identity, 3-listen unlock, state round-trip, and RLS SQL expectations). Verification completed: `npm test` passed (84 tests), `npm run validate:content` passed (34 units, 45 informational repeated-vocabulary warnings), `npm run build` passed, `npm run verify:production` passed, and `git diff --check` passed. Apply `supabase/migrations/20261003000000_create_progress.sql`, configure `SUPABASE_URL` and `SUPABASE_ANON_KEY`, then configure Google OAuth in Supabase/Google Cloud before cloud sign-in can be exercised against a live project. Live external OAuth and database behavior require those credentials and were not verified locally.

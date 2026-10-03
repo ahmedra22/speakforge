@@ -30,6 +30,7 @@ const publicModules = new Map([
   ["/progression.js", source("domain", "progression.js")],
   ["/domain/audio-timing.js", source("domain", "audio-timing.js")],
   ["/ai-practice-panel.js", source("features", "ai-practice", "ai-practice-panel.js")],
+  ["/progress-sync.js", source("features", "progress", "progress-sync.js")],
 ]);
 
 function loadLocalEnvironment() {
@@ -132,6 +133,7 @@ export function createAppServer({ aiPracticeService } = {}) {
         return session ? sendJson(response, 200, session) : sendJson(response, 404, { error: "session_not_found", message: "This practice session expired. Start a new session." });
       }
       if (request.method !== "GET" && request.method !== "HEAD") { response.writeHead(405, { allow: isAiRoute ? "GET, POST" : "GET, HEAD" }); response.end(); return; }
+      if (url.pathname === "/api/config") return sendJson(response, 200, { supabaseUrl: process.env.SUPABASE_URL ?? "", supabaseAnonKey: process.env.SUPABASE_ANON_KEY ?? "" });
       if (url.pathname === "/styles.css") return sendFile(response, path.join(publicDir, "styles.css"), "text/css; charset=utf-8");
       if (url.pathname === "/app.js") return sendFile(response, path.join(publicDir, "app.js"), "text/javascript; charset=utf-8");
       if (publicModules.has(url.pathname)) return sendFile(response, publicModules.get(url.pathname), "text/javascript; charset=utf-8");

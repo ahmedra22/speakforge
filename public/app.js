@@ -10,8 +10,21 @@ import { mountGrammarSection } from '/grammar-section.js';
 import { mountReviewExperience } from '/review-experience.js';
 import { mountAiPracticePanel } from '/ai-practice-panel.js';
 import { deriveSequenceProgress, deriveLevelProgress, deriveUnitCompletion, completeUnit } from '/progression.js';
+import { createSupabaseAuth, createProgressSync } from '/progress-sync.js';
 const toggle=document.querySelector('.nav-toggle'),nav=document.querySelector('#primary-navigation');toggle?.addEventListener('click',()=>{const open=toggle.getAttribute('aria-expanded')==='true';toggle.setAttribute('aria-expanded',String(!open));nav?.classList.toggle('is-open',!open);});nav?.addEventListener('click',event=>{if(event.target.closest('a')){nav.classList.remove('is-open');toggle?.setAttribute('aria-expanded','false');}});
 const preferences=createAudioPreferences(),progressStore=createListeningProgressStore(),contextCache=new Map();
+const authButton=document.querySelector("[data-auth-button]"),authStatus=document.querySelector("[data-auth-status]");
+function renderAuthState({status,message,user}){if(!authButton||!authStatus)return;authButton.textContent=user?"Sign out":"Continue with Google";authButton.hidden=status==="unconfigured";authButton.disabled=status==="loading"||status==="syncing";authStatus.textContent=message||(status==="loading"?"Checking sign-in…":status==="syncing"?"Syncing your progress…":user?`Signed in as ${user.email||"Google account"}`:status==="unconfigured"?"Progress saved on this device":"Progress saved on this device");}
+let progressSync;
+renderAuthState({status:"loading"});
+async function initializeCloudProgress(){
+  const cloudAuthConfig=await fetch("/api/config").then(r=>r.ok?r.json():{}).catch(()=>({}));
+  const auth=createSupabaseAuth({url:cloudAuthConfig.supabaseUrl,anonKey:cloudAuthConfig.supabaseAnonKey});
+  progressSync=createProgressSync({store:progressStore,auth,onState:renderAuthState});
+  authButton?.addEventListener("click",async()=>{authButton.disabled=true;try{if(progressSync.getUserId())await progressSync.signOut();else await progressSync.signIn();}catch(error){renderAuthState({status:"error",message:error.message});authButton.disabled=false;}});
+  await progressSync.start();
+}
+void initializeCloudProgress().catch(()=>renderAuthState({status:"error",message:"Cloud progress is unavailable. Local progress remains saved."}));
 const getBookContext=id=>{if(!contextCache.has(id))contextCache.set(id,fetch(`/api/books/${encodeURIComponent(id)}/learning-sequence`).then(response=>response.ok?response.json():null));return contextCache.get(id);};
 function updateResume(){const saved=progressStore.getLastVisited();for(const slot of document.querySelectorAll('[data-resume-learning]')){slot.replaceChildren();if(!saved?.href||!saved.href.startsWith('/learn/')){slot.hidden=true;continue;}const p=document.createElement('p');p.className='eyebrow';p.textContent='Pick up where you left off';const title=document.createElement('strong');title.textContent=saved.title||'Your last learning item';const link=document.createElement('a');link.className='button button-primary';link.href=saved.href;link.textContent='Resume Learning';slot.append(p,title,link);slot.hidden=false;}}
 function rememberVisits(){for(const node of document.querySelectorAll('[data-visit-location]'))progressStore.setLastVisited({levelId:node.dataset.levelId,bookId:node.dataset.bookId,itemId:node.dataset.itemId,itemType:node.dataset.itemType,href:node.dataset.visitHref,title:node.dataset.visitTitle});updateResume();}

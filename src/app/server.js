@@ -71,10 +71,10 @@ async function readJsonBody(request, limit = 12000) {
   try { return JSON.parse(body || "{}"); }
   catch { throw Object.assign(new Error("Request body must be valid JSON."), { status: 400 }); }
 }
-async function sendFile(response, file, type) {
+async function sendFile(response, file, type, cacheControl = "public, max-age=3600") {
   try {
     const data = await fs.readFile(file);
-    response.writeHead(200, { "content-type": type, "content-length": data.length, "cache-control": "public, max-age=3600" });
+    response.writeHead(200, { "content-type": type, "content-length": data.length, "cache-control": cacheControl });
     response.end(data);
   } catch { response.writeHead(404); response.end("Not found"); }
 }
@@ -189,9 +189,9 @@ export function createAppServer({ aiPracticeService } = {}) {
         return sendJson(response, 200, { books: results });
       }
       if (url.pathname === "/api/config") return sendJson(response, 200, { supabaseUrl: process.env.SUPABASE_URL ?? "", supabaseAnonKey: process.env.SUPABASE_ANON_KEY ?? "" });
-      if (url.pathname === "/styles.css") return sendFile(response, path.join(publicDir, "styles.css"), "text/css; charset=utf-8");
-      if (url.pathname === "/app.js") return sendFile(response, path.join(publicDir, "app.js"), "text/javascript; charset=utf-8");
-      if (publicModules.has(url.pathname)) return sendFile(response, publicModules.get(url.pathname), "text/javascript; charset=utf-8");
+      if (url.pathname === "/styles.css") return sendFile(response, path.join(publicDir, "styles.css"), "text/css; charset=utf-8", "no-cache, must-revalidate");
+      if (url.pathname === "/app.js") return sendFile(response, path.join(publicDir, "app.js"), "text/javascript; charset=utf-8", "no-cache, must-revalidate");
+      if (publicModules.has(url.pathname)) return sendFile(response, publicModules.get(url.pathname), "text/javascript; charset=utf-8", "no-cache, must-revalidate");
       if (url.pathname.startsWith("/api/units/") && url.pathname.endsWith("/passage")) {
         const id = decodeURIComponent(url.pathname.slice("/api/units/".length, -"/passage".length)), unit = await contentLoader.getUnit(id);
         return unit ? sendJson(response, 200, { id: unit.id, number: unit.number, title: unit.title, passage: unit.passage, audioTiming: unit.audioTiming ?? null }) : sendJson(response, 404, { error: "unit_not_found" });

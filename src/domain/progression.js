@@ -56,8 +56,10 @@ export function deriveUnitCompletion(unit, progressStore, { requireAiPractice = 
 
 export function getItemStatus(item, { sequence, progressStore, lastVisitedId = null, index = 0 } = {}) {
   if (isItemComplete(item, progressStore)) return 'completed';
-  const previousComplete = sequence.slice(0, index).every(previous => isItemComplete(previous, progressStore));
-  if (!previousComplete || (item.kind === 'review' && !isReviewUnlocked(item, progressStore))) return 'locked';
+  if (item.kind === 'review') {
+    const previousComplete = sequence.slice(0, index).every(previous => isItemComplete(previous, progressStore));
+    if (!previousComplete || !isReviewUnlocked(item, progressStore)) return 'locked';
+  }
   if (hasActivity(item, progressStore)) return 'in-progress';
   return lastVisitedId === item.id || index === 0 ? 'current' : 'available';
 }

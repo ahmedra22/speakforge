@@ -42,11 +42,11 @@ function renderDashboard(root, data, progressStore) {
   content.hidden=false;
 }
 
-export async function mountDashboard(root,{progressStore}){
+export function mountDashboard(root,{progressStore}){
   try{
-    const response=await fetch('/api/my-learning/context');
-    if(!response.ok) throw new Error('Could not load learning context.');
-    const data=await response.json();
+    const source = root.querySelector('[data-dashboard-context]');
+    if(!source) throw new Error('Dashboard context is missing.');
+    const data = JSON.parse(source.textContent || '{}');
     renderDashboard(root,data,progressStore);
   }catch{
     root.querySelector('[data-dashboard-loading]')?.replaceChildren(Object.assign(document.createElement('p'),{textContent:'Your learning dashboard could not load. Refresh to try again.'}));

@@ -16,19 +16,41 @@ const preferences=createAudioPreferences(),progressStore=createListeningProgress
 const authButton=document.querySelector("[data-auth-button]"),authStatus=document.querySelector("[data-auth-status]");
 function renderAuthState({status,message,user}){if(!authButton||!authStatus)return;authButton.textContent=user?"Sign out":"Continue with Google";authButton.hidden=status==="unconfigured";authButton.disabled=status==="loading"||status==="syncing";authStatus.textContent=message||(status==="loading"?"Checking sign-in…":status==="syncing"?"Syncing your progress…":user?`Signed in as ${user.email||"Google account"}`:status==="unconfigured"?"Progress saved on this device":"Progress saved on this device");}
 let progressSync;
+let resolveAuthReady;
+const authReady=new Promise(resolve=>{resolveAuthReady=resolve;});
+function syncLearningAuthGate(){
+  const page=document.querySelector("[data-learning-auth-page]");
+  if(!page)return;
+  const gate=page.querySelector("[data-learning-auth-gate]");
+  const content=page.querySelector("[data-learning-auth-content]");
+  const signedIn=Boolean(progressSync?.getUserId());
+  if(gate)gate.hidden=signedIn;
+  if(content)content.hidden=!signedIn;
+}
 renderAuthState({status:"loading"});
 document.querySelector("[data-auth-control]")?.addEventListener("submit",async event=>{
   if(!progressSync?.getUserId())return;
   event.preventDefault();
   authButton.disabled=true;
-  try{await progressSync.signOut();}
+  try{await progressSync.signOut();syncLearningAuthGate();}
   catch(error){renderAuthState({status:"error",message:error.message});authButton.disabled=false;}
+});
+document.addEventListener("click",event=>{
+  const link=event.target.closest("[data-learning-entry]");
+  if(!link||event.defaultPrevented)return;
+  event.preventDefault();
+  void authReady.then(()=>{
+    const href=new URL(link.getAttribute("href"),location.origin);
+    const destination=`${href.pathname}${href.search}`;
+    if(progressSync?.getUserId()){location.assign(destination);return;}
+    location.assign(`/api/auth/google?next=${encodeURIComponent(destination)}`);
+  }).catch(()=>{location.assign(link.href);});
 });
 async function initializeCloudProgress(){
   const cloudAuthConfig=await fetch("/api/config").then(r=>r.ok?r.json():{}).catch(()=>({}));
   const auth=createSupabaseAuth({url:cloudAuthConfig.supabaseUrl,anonKey:cloudAuthConfig.supabaseAnonKey});
-  progressSync=createProgressSync({store:progressStore,auth,onState:renderAuthState});
-  await progressSync.start();
+  progressSync=createProgressSync({store:progressStore,auth,onState:state=>{renderAuthState(state);syncLearningAuthGate();}});
+  try{await progressSync.start();}finally{syncLearningAuthGate();resolveAuthReady();}
 }
 void initializeCloudProgress().catch(()=>renderAuthState({status:"error",message:"Cloud progress is unavailable. Local progress remains saved."}));
 const getBookContext=id=>{if(!contextCache.has(id))contextCache.set(id,fetch(`/api/books/${encodeURIComponent(id)}/learning-sequence`).then(response=>response.ok?response.json():null));return contextCache.get(id);};

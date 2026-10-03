@@ -32,6 +32,25 @@ test("Vercel adapter restores the original pathname carried in the rewrite query
     supabaseUrl: "",
     supabaseAnonKey: "",
   });
+  const previousUrl = process.env.SUPABASE_URL;
+  const previousKey = process.env.SUPABASE_ANON_KEY;
+  process.env.SUPABASE_URL = "https://project.supabase.co";
+  process.env.SUPABASE_ANON_KEY = "public-anon-key";
+  const authRedirect = await fetch(`${origin}/api?path=%2Fapi%2Fauth%2Fgoogle`, {
+    redirect: "manual",
+    headers: { referer: `${origin}/learn/a2` },
+  });
+  assert.equal(authRedirect.status, 302);
+  const location = new URL(authRedirect.headers.get("location"));
+  assert.equal(location.origin, "https://project.supabase.co");
+  assert.equal(location.pathname, "/auth/v1/authorize");
+  assert.equal(location.searchParams.get("provider"), "google");
+  assert.equal(location.searchParams.get("redirect_to"), `${origin}/learn/a2`);
+  assert.equal(location.searchParams.get("apikey"), "public-anon-key");
+  if (previousUrl === undefined) delete process.env.SUPABASE_URL;
+  else process.env.SUPABASE_URL = previousUrl;
+  if (previousKey === undefined) delete process.env.SUPABASE_ANON_KEY;
+  else process.env.SUPABASE_ANON_KEY = previousKey;
 
   const sequence = await fetch(`${origin}/api?path=%2Fapi%2Fbooks%2Fa2-foundation%2Flearning-sequence`);
   assert.equal(sequence.status, 200);

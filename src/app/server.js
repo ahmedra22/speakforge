@@ -141,12 +141,20 @@ export function createAppServer({ aiPracticeService } = {}) {
         const host = request.headers.host ?? "localhost";
         const origin = `${protocol}://${host}`;
         let redirectTo = `${origin}/`;
-        const referer = request.headers.referer;
-        if (referer) {
+        const requestedNext = url.searchParams.get("next");
+        if (requestedNext) {
           try {
-            const candidate = new URL(referer);
-            if (candidate.origin === origin) redirectTo = `${origin}${candidate.pathname}${candidate.search}`;
+            const candidate = new URL(requestedNext, origin);
+            if (candidate.origin === origin && candidate.pathname.startsWith("/learn/")) redirectTo = `${origin}${candidate.pathname}${candidate.search}`;
           } catch {}
+        } else {
+          const referer = request.headers.referer;
+          if (referer) {
+            try {
+              const candidate = new URL(referer);
+              if (candidate.origin === origin) redirectTo = `${origin}${candidate.pathname}${candidate.search}`;
+            } catch {}
+          }
         }
         const authorize = new URL("/auth/v1/authorize", supabaseUrl);
         authorize.searchParams.set("provider", "google");

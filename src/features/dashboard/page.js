@@ -8,7 +8,7 @@ export async function myLearningPage(loader){
   const availableBooks = books.filter(book => book.status === 'available');
   const dashboardBooks = [];
   for (const book of availableBooks) {
-    const units = await loader.listUnitSummaries(book.id);
+    const units = await loader.listUnits(book.id);
     const sequence = buildLearningSequence(book.id, units, { reviewFrequency: book.reviewFrequency ?? 3 });
     const level = levels.find(item => item.id === book.levelId);
     dashboardBooks.push({

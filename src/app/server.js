@@ -133,6 +133,30 @@ export function createAppServer({ aiPracticeService } = {}) {
         return session ? sendJson(response, 200, session) : sendJson(response, 404, { error: "session_not_found", message: "This practice session expired. Start a new session." });
       }
       if (request.method !== "GET" && request.method !== "HEAD") { response.writeHead(405, { allow: isAiRoute ? "GET, POST" : "GET, HEAD" }); response.end(); return; }
+      if (url.pathname === "/api/auth/google") {
+        const supabaseUrl = process.env.SUPABASE_URL ?? "";
+        const supabaseAnonKey = process.env.SUPABASE_ANON_KEY ?? "";
+        if (!supabaseUrl || !supabaseAnonKey) return sendJson(response, 503, { error: "auth_not_configured", message: "Google sign-in is not configured yet." });
+        const protocol = String(request.headers["x-forwarded-proto"] ?? "http").split(",")[0].trim() || "http";
+        const host = request.headers.host ?? "localhost";
+        const origin = `${protocol}://${host}`;
+        let redirectTo = `${origin}/`;
+        const referer = request.headers.referer;
+        if (referer) {
+          try {
+            const candidate = new URL(referer);
+            if (candidate.origin === origin) redirectTo = `${origin}${candidate.pathname}${candidate.search}`;
+          } catch {}
+        }
+        const authorize = new URL("/auth/v1/authorize", supabaseUrl);
+        authorize.searchParams.set("provider", "google");
+        authorize.searchParams.set("redirect_to", redirectTo);
+        authorize.searchParams.set("apikey", supabaseAnonKey);
+        authorize.searchParams.set("response_type", "token");
+        response.writeHead(302, { location: authorize.toString(), "cache-control": "no-store" });
+        response.end();
+        return;
+      }
       if (url.pathname === "/api/config") return sendJson(response, 200, { supabaseUrl: process.env.SUPABASE_URL ?? "", supabaseAnonKey: process.env.SUPABASE_ANON_KEY ?? "" });
       if (url.pathname === "/styles.css") return sendFile(response, path.join(publicDir, "styles.css"), "text/css; charset=utf-8");
       if (url.pathname === "/app.js") return sendFile(response, path.join(publicDir, "app.js"), "text/javascript; charset=utf-8");

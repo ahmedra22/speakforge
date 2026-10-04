@@ -189,9 +189,9 @@ export function createAppServer({ aiPracticeService } = {}) {
         return sendJson(response, 200, { books: results });
       }
       if (url.pathname === "/api/config") return sendJson(response, 200, { supabaseUrl: process.env.SUPABASE_URL ?? "", supabaseAnonKey: process.env.SUPABASE_ANON_KEY ?? "" });
-      if (url.pathname === "/styles.css") return sendFile(response, path.join(publicDir, "styles.css"), "text/css; charset=utf-8", "no-cache, must-revalidate");
-      if (url.pathname === "/app.js") return sendFile(response, path.join(publicDir, "app.js"), "text/javascript; charset=utf-8", "no-cache, must-revalidate");
-      if (publicModules.has(url.pathname)) return sendFile(response, publicModules.get(url.pathname), "text/javascript; charset=utf-8", "no-cache, must-revalidate");
+      if (url.pathname === "/styles.css") return sendFile(response, path.join(publicDir, "styles.css"), "text/css; charset=utf-8", "public, max-age=31536000, immutable");
+      if (url.pathname === "/app.js") return sendFile(response, path.join(publicDir, "app.js"), "text/javascript; charset=utf-8", "public, max-age=31536000, immutable");
+      if (publicModules.has(url.pathname)) return sendFile(response, publicModules.get(url.pathname), "text/javascript; charset=utf-8", "public, max-age=31536000, immutable");
       if (url.pathname.startsWith("/api/units/") && url.pathname.endsWith("/passage")) {
         const id = decodeURIComponent(url.pathname.slice("/api/units/".length, -"/passage".length)), unit = await contentLoader.getUnit(id);
         return unit ? sendJson(response, 200, { id: unit.id, number: unit.number, title: unit.title, passage: unit.passage, audioTiming: unit.audioTiming ?? null }) : sendJson(response, 404, { error: "unit_not_found" });
@@ -219,7 +219,7 @@ export function createAppServer({ aiPracticeService } = {}) {
       if (url.pathname.startsWith("/assets/")) {
         const rel = decodeURIComponent(url.pathname.slice("/assets/".length)), file = path.resolve(coverDir, rel);
         if (!file.startsWith(coverDir + path.sep)) { response.writeHead(400); response.end("Bad path"); return; }
-        return sendFile(response, file, "image/jpeg");
+        return sendFile(response, file, "image/jpeg", "public, max-age=2592000, stale-while-revalidate=31536000");
       }
       if (url.pathname.startsWith("/audio/")) {
         const rel = decodeURIComponent(url.pathname.slice("/audio/".length)), file = path.resolve(audioDir, rel);
@@ -227,7 +227,7 @@ export function createAppServer({ aiPracticeService } = {}) {
         return sendAudio(request, response, file);
       }
       const html = await renderPath(decodeURIComponent(url.pathname));
-      response.writeHead(html.includes("Page not found") ? 404 : 200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" });
+      response.writeHead(html.includes("Page not found") ? 404 : 200, { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=60, stale-while-revalidate=300" });
       response.end(request.method === "HEAD" ? "" : html);
     } catch (error) {
       if (response.headersSent) { response.destroy(); return; }

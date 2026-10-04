@@ -128,3 +128,39 @@
   .unit-cta{min-height:40px}
   .status{margin-right:auto}
 }
+
+
+/* Final editorial organization for level / book pages */
+.level-switcher{padding:28px 0 20px}
+.level-hero{padding:38px 0 42px;gap:clamp(2.5rem,7vw,6rem)}
+.level-cover-wrap{max-width:280px}
+.level-intro{max-width:650px}
+.level-intro h1{font-size:clamp(3rem,5vw,4.5rem);margin:.2rem 0 .8rem}
+.level-description{max-width:560px;line-height:1.65}
+.level-stat{margin:1.1rem 0 1rem}
+.level-stat strong{font-size:2rem}
+.level-overview{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);gap:1rem;margin:0 0 2.5rem;padding:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.level-progress-summary{padding:1.1rem 1rem 1.15rem;border:0;border-radius:0;background:transparent;box-shadow:none;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.15rem 1rem;align-items:center}
+.level-progress-summary h2{font-size:1.7rem}
+.level-progress-summary .progress-track{height:6px;background:#e1e8df}
+.level-resume-panel{margin:0!important;padding:1.05rem 1.15rem!important;border:0!important;border-left:1px solid var(--line)!important;border-radius:0!important;background:#f0f3ec!important;box-shadow:none!important}
+.book-unit-group{padding:2.6rem 0 4rem}
+.book-unit-group+.book-unit-group{padding-top:3rem}
+.book-unit-heading{padding:0 0 .8rem;margin:0 0 1.4rem;border-bottom:1px solid var(--line)}
+.book-unit-heading .eyebrow{margin:0}
+.book-unit-heading h2{font:500 1.05rem/1.2 Inter,ui-sans-serif,system-ui,sans-serif;color:var(--muted);letter-spacing:0}
+.unit-section-heading{margin-bottom:1.4rem}
+.unit-section-heading h2{font-size:clamp(2rem,3.5vw,2.7rem)}
+.unit-section-heading>p{max-width:340px}
+@media(max-width:650px){
+  .level-switcher{padding:20px 0 14px}
+  .level-hero{grid-template-columns:92px minmax(0,1fr);gap:1.2rem;padding:28px 0 30px}
+  .level-cover-wrap{width:92px}
+  .level-intro h1{font-size:clamp(2rem,9vw,3rem)}
+  .level-description{font-size:.82rem}
+  .level-overview{grid-template-columns:1fr;margin-bottom:1.8rem}
+  .level-progress-summary{padding:1rem 0}
+  .level-resume-panel{border-left:0!important;border-top:1px solid var(--line)!important;padding:1rem 0!important}
+  .book-unit-group{padding:1.8rem 0 2.8rem}
+  .book-unit-heading{margin-bottom:1.15rem}
+}

@@ -211,3 +211,84 @@
   .page-container[data-level-id] .level-progress-summary{padding:0}
   .page-container[data-level-id] .level-resume-panel{padding:.9rem 0!important;background:transparent!important;border:0!important;border-top:1px solid var(--line)!important;border-radius:0!important}
 }
+
+
+/* Mobile-first course page refinement */
+@media(max-width:650px){
+  .page-container[data-level-id]{padding-left:16px;padding-right:16px}
+  .page-container[data-level-id] .breadcrumbs{padding-top:1rem;font-size:.72rem}
+  .page-container[data-level-id] .level-switcher{padding:16px 0 12px;overflow:hidden}
+  .page-container[data-level-id] .level-pills{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+  .page-container[data-level-id] .level-pills::-webkit-scrollbar{display:none}
+  .page-container[data-level-id] .level-pill{flex:0 0 auto;white-space:nowrap;min-height:40px;padding:.48rem .72rem}
+
+  .page-container[data-level-id] .level-hero{
+    display:flex!important;
+    flex-direction:column;
+    align-items:stretch;
+    gap:1.25rem;
+    margin-top:10px;
+    padding:1.25rem 1rem 1.35rem;
+    border-radius:18px;
+    text-align:left;
+  }
+  .page-container[data-level-id] .level-cover-wrap{
+    width:min(190px,68vw);
+    max-width:none;
+    margin:0 auto;
+    padding-top:1.35rem;
+  }
+  .page-container[data-level-id] .level-cover-label{
+    left:50%;
+    transform:translateX(-50%);
+    top:0;
+    white-space:nowrap;
+  }
+  .page-container[data-level-id] .level-intro{
+    max-width:none;
+  }
+  .page-container[data-level-id] .level-intro .eyebrow{margin-bottom:.45rem}
+  .page-container[data-level-id] .level-intro h1{
+    font-size:clamp(2.15rem,11vw,3.1rem);
+    line-height:1.02;
+    margin:.1rem 0 .8rem;
+  }
+  .page-container[data-level-id] .level-description{
+    font-size:.86rem;
+    line-height:1.6;
+    margin-bottom:1rem;
+  }
+  .page-container[data-level-id] .level-stat{display:none}
+  .page-container[data-level-id] .course-stats{grid-template-columns:repeat(3,1fr);max-width:none;margin:0 0 1rem}
+  .page-container[data-level-id] .course-stats div{padding:.65rem .35rem}
+  .page-container[data-level-id] .course-stats strong{font-size:1.2rem}
+  .page-container[data-level-id] .course-stats span{font-size:.56rem;line-height:1.25}
+  .page-container[data-level-id] .level-intro .button{width:100%;min-height:44px}
+
+  .page-container[data-level-id] .level-overview{
+    margin:1rem 0 2rem;
+    padding:0;
+    border:0;
+  }
+  .page-container[data-level-id] .level-progress-summary{
+    padding:1rem 0;
+  }
+  .page-container[data-level-id] .level-progress-summary h2{font-size:1.55rem}
+  .page-container[data-level-id] .level-progress-percent{font-size:.75rem}
+  .page-container[data-level-id] .level-resume-panel{
+    margin-top:.2rem!important;
+    padding:1rem 0!important;
+    border:0!important;
+    border-top:1px solid var(--line)!important;
+    background:transparent!important;
+  }
+
+  .page-container[data-level-id] .book-unit-group{
+    padding:1.5rem 0 2.6rem;
+  }
+  .page-container[data-level-id] .book-unit-heading{
+    margin-bottom:1rem;
+    padding-bottom:.7rem;
+  }
+  .page-container[data-level-id] .book-unit-heading h2{font-size:.9rem}
+}

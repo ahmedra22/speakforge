@@ -164,3 +164,50 @@
   .book-unit-group{padding:1.8rem 0 2.8rem}
   .book-unit-heading{margin-bottom:1.15rem}
 }
+
+/* Premium course-page hierarchy */
+.page-container[data-level-id] .breadcrumbs{margin-bottom:0}
+.page-container[data-level-id] .level-switcher{border-bottom:0;padding-bottom:14px}
+.page-container[data-level-id] .level-pills{gap:.45rem}
+.page-container[data-level-id] .level-pill{background:rgba(255,255,255,.72)}
+.page-container[data-level-id] .level-hero{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(250px,340px) minmax(0,1fr);gap:clamp(3rem,7vw,6.5rem);align-items:center;margin:12px 0 0;padding:54px clamp(28px,5vw,68px);border:1px solid #d9e1d7;border-radius:28px;background:linear-gradient(120deg,#edf3eb 0%,#f7f6f0 62%);box-shadow:0 18px 45px rgba(24,59,50,.07)}
+.page-container[data-level-id] .level-hero:after{content:"";position:absolute;right:-100px;bottom:-140px;width:360px;height:360px;border-radius:50%;background:#dce7dc;opacity:.5;z-index:-1}
+.page-container[data-level-id] .level-cover-wrap{position:relative;max-width:300px;width:100%;justify-self:center;padding-top:34px}
+.page-container[data-level-id] .level-cover-label{position:absolute;top:0;left:10px;padding:.35rem .65rem;border-radius:999px;background:var(--forest);color:#fff;font-size:.58rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;box-shadow:0 6px 16px rgba(24,59,50,.16)}
+.page-container[data-level-id] .level-cover{border-radius:7px;box-shadow:0 20px 35px rgba(24,59,50,.18)}
+.page-container[data-level-id] .level-intro{max-width:680px}
+.page-container[data-level-id] .level-intro .eyebrow{margin-bottom:.65rem}
+.page-container[data-level-id] .level-intro h1{font-size:clamp(3.1rem,5.5vw,5.2rem);margin:.1rem 0 1rem}
+.page-container[data-level-id] .level-description{max-width:610px;font-size:1rem;line-height:1.7;margin-bottom:1.4rem}
+.course-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:570px;margin:0 0 1.5rem;border-top:1px solid #d3ddd2;border-bottom:1px solid #d3ddd2}
+.course-stats div{padding:.8rem .9rem .85rem;border-right:1px solid #d3ddd2}
+.course-stats div:last-child{border-right:0}
+.course-stats strong{display:block;color:var(--forest);font:500 1.55rem/1 Georgia,serif}
+.course-stats span{display:block;margin-top:.22rem;color:var(--muted);font-size:.68rem}
+.page-container[data-level-id] .level-intro .button{min-height:44px;padding:.65rem 1rem}
+.page-container[data-level-id] .level-overview{display:block;margin:1.6rem 0 3rem;padding:1.1rem 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.page-container[data-level-id] .level-progress-summary{max-width:760px}
+.page-container[data-level-id] .level-resume-panel{margin-top:1rem!important;max-width:760px;border:1px solid #d7dfd5!important;border-left:1px solid #d7dfd5!important;border-radius:14px!important;padding:1rem 1.15rem!important;background:#edf2ea!important}
+.page-container[data-level-id] .book-unit-group{padding-top:2.2rem}
+.page-container[data-level-id] .book-unit-heading{margin-bottom:1.2rem}
+@media(max-width:800px){
+  .page-container[data-level-id] .level-hero{grid-template-columns:190px minmax(0,1fr);gap:2rem;padding:38px 28px}
+  .page-container[data-level-id] .level-cover-wrap{max-width:210px}
+  .page-container[data-level-id] .level-intro h1{font-size:clamp(2.45rem,7vw,4rem)}
+  .page-container[data-level-id] .level-description{font-size:.9rem}
+}
+@media(max-width:650px){
+  .page-container[data-level-id] .level-hero{grid-template-columns:110px minmax(0,1fr);gap:1.15rem;margin-top:8px;padding:26px 18px;border-radius:20px}
+  .page-container[data-level-id] .level-cover-wrap{width:110px;padding-top:26px}
+  .page-container[data-level-id] .level-cover-label{left:4px;font-size:.5rem;padding:.28rem .45rem}
+  .page-container[data-level-id] .level-intro h1{font-size:clamp(2rem,9vw,3rem)}
+  .page-container[data-level-id] .level-description{font-size:.78rem;line-height:1.55;margin-bottom:1rem}
+  .course-stats{grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:1rem}
+  .course-stats div{padding:.62rem .45rem}
+  .course-stats strong{font-size:1.15rem}
+  .course-stats span{font-size:.56rem}
+  .page-container[data-level-id] .level-intro .button{font-size:.73rem;min-height:42px;padding:.55rem .75rem}
+  .page-container[data-level-id] .level-overview{margin:1rem 0 2rem;padding:1rem 0}
+  .page-container[data-level-id] .level-progress-summary{padding:0}
+  .page-container[data-level-id] .level-resume-panel{padding:.9rem 0!important;background:transparent!important;border:0!important;border-top:1px solid var(--line)!important;border-radius:0!important}
+}

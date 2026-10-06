@@ -14,6 +14,7 @@ const root = process.env.SPEAKFORGE_ROOT
 const publicDir = path.join(root, "public");
 const coverDir = path.join(root, "resources", "covers");
 const audioDir = path.join(root, "resources", "audio");
+const SITE_URL = process.env.SITE_URL || "https://speakforge-seven.vercel.app";
 const source = (...parts) => path.join(root, "src", ...parts);
 const publicModules = new Map([
   ["/audio-player.js", source("features", "audio", "audio-player.js")],
@@ -189,6 +190,24 @@ export function createAppServer({ aiPracticeService } = {}) {
         return sendJson(response, 200, { books: results });
       }
       if (url.pathname === "/api/config") return sendJson(response, 200, { supabaseUrl: process.env.SUPABASE_URL ?? "", supabaseAnonKey: process.env.SUPABASE_ANON_KEY ?? "" });
+      if (url.pathname === "/robots.txt") {
+        response.writeHead(200, { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=3600" });
+        response.end(`User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /my-learning\nSitemap: ${SITE_URL}/sitemap.xml\n`);
+        return;
+      }
+      if (url.pathname === "/sitemap.xml") {
+        const publicUrls = new Set([SITE_URL + "/", SITE_URL + "/about"]);
+        const availableBooks = (await contentLoader.listBooks()).filter(book => book.status === "available");
+        for (const book of availableBooks) publicUrls.add(`${SITE_URL}/learn/${book.routeSlug}`);
+        const urls = [...publicUrls];
+        const body = '<?xml version="1.0" encoding="UTF-8"?>' +
+          '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
+          urls.map(item => `<url><loc>${item}</loc></url>`).join("") +
+          '</urlset>';
+        response.writeHead(200, { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" });
+        response.end(body);
+        return;
+      }
       if (url.pathname === "/styles.css") return sendFile(response, path.join(publicDir, "styles.css"), "text/css; charset=utf-8", "no-cache, must-revalidate");
       if (url.pathname === "/app.js") return sendFile(response, path.join(publicDir, "app.js"), "text/javascript; charset=utf-8", "no-cache, must-revalidate");
       if (publicModules.has(url.pathname)) return sendFile(response, publicModules.get(url.pathname), "text/javascript; charset=utf-8", "no-cache, must-revalidate");

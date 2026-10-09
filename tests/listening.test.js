@@ -1,4 +1,4 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {createListenCompletionTracker} from '../src/features/listening/listen-completion.js';import {createListeningProgressStore} from '../src/features/listening/listening-progress.js';import {validateAudioTiming,getActiveTimingSegment} from '../src/domain/audio-timing.js';
+import test from 'node:test';import assert from 'node:assert/strict';import {createListenCompletionTracker} from '../src/features/listening/listen-completion.js';import {createListeningProgressStore} from '../src/features/listening/listening-progress.js';import {validateAudioTiming,getActiveTimingSegment} from '../src/domain/audio-timing.js';import {createEstimatedWordTiming} from '../src/features/reading/passage-reader.js';
 const run=()=>{const completed=[];const tracker=createListenCompletionTracker({onComplete:x=>completed.push(x)});tracker.handle({type:'play',position:0,duration:4});for(let t=.1;t<=4;t+=.1)tracker.handle({type:'timeupdate',position:Math.min(t,4),duration:4});tracker.handle({type:'ended',position:4,duration:4});return{completed,tracker};};
 test('natural continuous listen qualifies once; play alone and direct seek do not',()=>{let n=0;const t=createListenCompletionTracker({onComplete:()=>n++});t.handle({type:'play',position:0,duration:4});t.handle({type:'seek',position:0,from:0,to:3.99,duration:4});t.handle({type:'ended',position:4,duration:4});assert.equal(n,0);const x=run();assert.equal(x.completed.length,1);});
 test('forward seek gaps prevent completion while rewound listening covers naturally',()=>{const c=[];const t=createListenCompletionTracker({onComplete:e=>c.push(e)});t.handle({type:'play',position:0,duration:10});for(let i=0;i<2;i++)t.handle({type:'timeupdate',position:i+1,duration:10});t.handle({type:'seek',from:2,to:8,position:8,duration:10});for(let i=9;i<=10;i++)t.handle({type:'timeupdate',position:i,duration:10});t.handle({type:'ended',position:10,duration:10});assert.equal(c.length,0);});
@@ -6,3 +6,15 @@ test('repeat natural loop events count separately and progress persists with mon
 test('timing maps validate and derive the active segment; absent timing stays absent',()=>{const timing={version:1,granularity:'word',segments:[{id:'one',text:'Hello',start:0,end:1,paragraphIndex:0}]};assert.equal(validateAudioTiming(timing,{duration:2,paragraphCount:1}).valid,true);assert.equal(getActiveTimingSegment(timing,.4).id,'one');assert.equal(validateAudioTiming(null).valid,false);});
 import {renderPath} from '../src/app/render.js';
 test('unit HTML contains lock state but no passage text before unlock',async()=>{const html=await renderPath('/learn/a2/unit-01');assert.match(html,/Reading passage locked/);assert.doesNotMatch(html,/Many successful people say that the morning/);assert.match(html,/data-passage-host/);});
+
+test('estimated passage word timing supports sequential highlighting and click-to-seek positions',()=>{
+ const words=createEstimatedWordTiming(['A tree can bend.','Strong roots help.'],8);
+ assert.equal(words.length,7);
+ assert.equal(words[0].text,'A');
+ assert.equal(words[0].start,0);
+ assert.ok(words.every((word,index)=>word.end>word.start&&(!index||word.start>=words[index-1].start)));
+ assert.equal(words[words.length-1].end,8);
+ assert.equal(words[2].paragraphIndex,0);
+ assert.equal(words[3].paragraphIndex,1);
+ assert.equal(createEstimatedWordTiming(['Hello'],NaN).length,0);
+});
